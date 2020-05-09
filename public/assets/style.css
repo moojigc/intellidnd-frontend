@@ -1,0 +1,73 @@
+:root {
+    font-size: 20px;
+    --primary: #9B59B6;
+    --secondary: #192A51;
+    --third: #AAA1C8;
+    --fourth: #D5C6E0;
+    --fifth: #F5E6E8;
+    --boxshadow: #0000004d;
+}
+
+body {
+    color: whitesmoke;
+    font-family: 'Open Sans', sans-serif;
+    background-color: var(--fourth);
+}
+
+.jumbotron {
+    text-align: center;
+    color: white;
+    background: var(--secondary);
+    font-family: 'Bellota Text', cursive;
+    border-radius: 0;
+    box-shadow: 0 0 0.7rem 0.5rem var(--third);
+    padding: 1rem;
+}
+.jumbotron img {
+    border-radius: 50%;
+    width: 3rem;
+    height: 3rem;
+}
+
+.wrapper {
+    text-align: center;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    background: var(--secondary);
+    box-shadow: 0 0 0.7rem 0.5rem var(--third);
+    margin-bottom: 2rem;
+    border: solid 0.5rem white;
+}
+
+.logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card {
+    margin-bottom: 1rem;
+}
+
+.card, card-body {
+    background-color: var(--third);
+}
+
+.col-8 {
+    padding-right: unset;
+}
+.col-4 {
+    padding-left: unset;
+}
+
+.row {
+    margin-bottom: 0.5rem;
+}
+.card .row:last-of-type {
+    margin-bottom: unset;
+}
+
+.form-control[readonly] {
+    color: white;
+    background-color: var(--secondary);
+}

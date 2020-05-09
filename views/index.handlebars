@@ -1,0 +1,41 @@
+<h2>Hi, {{player.name}}!</h2>
+
+<form>
+    <div class="card">
+        <div class="card-header">Potions</div>
+        {{#each player.inventory.potions}}
+        <div class="row potion-row" data-name="{{name}}" data-quantity="{{quantity}}">
+            {{> input}}
+        </div>
+        {{/each}}
+        <div class="row weapon-row" data-name="" data-quantity="">
+           {{> input-nondynamic}}
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header">Weapons</div>
+        {{#each player.inventory.weapons}}
+        <div class="row weapon-row" data-name="{{name}}" data-quantity="{{quantity}}">
+            {{> input}}
+        </div>
+        {{/each}}
+        <div class="row weapon-row" data-name="" data-quantity="">
+            {{> input-nondynamic}}
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header">Miscellaneous Items</div>
+    
+        {{#each player.inventory.misc}}
+        <div class="row misc-row" data-name="{{name}}" data-quantity="{{quantity}}">
+            {{> input}}
+        </div>
+        {{/each}}
+        <div class="row misc-row" data-name="" data-quantity="">
+            {{> input-nondynamic}}
+        </div>
+
+    </div>
+
+    <button class="btn btn-primary">Submit</button>
+</form>
