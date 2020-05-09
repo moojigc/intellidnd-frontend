@@ -1,41 +1,45 @@
-<h2>Hi, {{player.name}}!</h2>
+<h1 class="player-name-display">Hi, <strong>{{player.name}}!</strong></h1>
 
 <form>
     <div class="card">
-        <div class="card-header">Potions</div>
-        {{#each player.inventory.potions}}
-        <div class="row potion-row" data-name="{{name}}" data-quantity="{{quantity}}">
-            {{> input}}
-        </div>
-        {{/each}}
-        <div class="row weapon-row" data-name="" data-quantity="">
-           {{> input-nondynamic}}
-        </div>
-    </div>
-    <div class="card">
-        <div class="card-header">Weapons</div>
-        {{#each player.inventory.weapons}}
-        <div class="row weapon-row" data-name="{{name}}" data-quantity="{{quantity}}">
-            {{> input}}
-        </div>
-        {{/each}}
-        <div class="row weapon-row" data-name="" data-quantity="">
-            {{> input-nondynamic}}
+        <h3 class="card-header">Potions</h3>
+        <div class="card-body">
+            {{#each player.inventory.potions}}
+            <div class="row potion-row" data-name="{{name}}" data-quantity="{{quantity}}">
+                {{> input}}
+            </div>
+            {{/each}}
+            <div class="row weapon-row" data-name="" data-quantity="">
+                {{> input-nondynamic}}
+            </div>
         </div>
     </div>
     <div class="card">
-        <div class="card-header">Miscellaneous Items</div>
-    
-        {{#each player.inventory.misc}}
-        <div class="row misc-row" data-name="{{name}}" data-quantity="{{quantity}}">
-            {{> input}}
+        <h3 class="card-header">Weapons</h3>
+        <div class="card-body">
+            {{#each player.inventory.weapons}}
+            <div class="row weapon-row" data-name="{{name}}" data-quantity="{{quantity}}">
+                {{> input}}
+            </div>
+            {{/each}}
+            <div class="row weapon-row" data-name="" data-quantity="">
+                {{> input-nondynamic}}
+            </div>
         </div>
-        {{/each}}
-        <div class="row misc-row" data-name="" data-quantity="">
-            {{> input-nondynamic}}
+    </div>
+    <div class="card">
+        <h3 class="card-header">Miscellaneous Items</h3>
+        <div class="card-body">
+            {{#each player.inventory.misc}}
+            <div class="row misc-row" data-name="{{name}}" data-quantity="{{quantity}}">
+                {{> input}}
+            </div>
+            {{/each}}
+            <div class="row misc-row" data-name="" data-quantity="">
+                {{> input-nondynamic}}
+            </div>
         </div>
-
     </div>
 
-    <button class="btn btn-primary">Submit</button>
+    <button class="btn btn-light btn-block">Submit</button>
 </form>
