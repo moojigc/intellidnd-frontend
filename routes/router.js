@@ -3,6 +3,10 @@ const express = require("express"),
     Player = require('../models/Player'),
     Guild = require('../models/Guild');
 
+router.get("/", async (req, res) => {
+    res.render('default', {});
+});
+
 router.get("/login/:id", async (req, res) => {
     try {
         let player = new Player({ id: req.params.id })
@@ -22,6 +26,7 @@ router.post("/api/user/:id", async (req, res) => {
     try {
         let player = new Player({ id: req.params.id })
         await player.sync();
+
         let response = await player.dbUpdate({
             inventory: req.body.inventory,
             changelog: req.body.changelog

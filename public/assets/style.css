@@ -14,6 +14,10 @@ body {
     background-color: var(--fourth);
 }
 
+article {
+    text-align: left;
+}
+
 .jumbotron {
     text-align: center;
     color: white;
@@ -27,6 +31,9 @@ body {
     border-radius: 50%;
     width: 3rem;
     height: 3rem;
+}
+.jumbotron h2 {
+    margin: 0;
 }
 
 .wrapper {
