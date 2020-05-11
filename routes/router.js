@@ -11,13 +11,20 @@ router.get("/login/:id", async (req, res) => {
     try {
         let player = new Player({ id: req.params.id })
         await player.sync();
-        console.log(player.inventory.potions);
         res.render('index', {
-            player: player
+            player: player,
+            // To avoic typing these in over and over
+            money: {
+                gold: 'Gold',
+                silver: 'Silver',
+                copper: 'Copper',
+                platinum: 'Platinum',
+                electrum: 'Electrum'
+            }
         });
     } catch (error) {
         console.error(error)
-        res.json({ message: 'Player not found!', error: 404 });
+        res.send({ message: 'Player not found!', error: 404 });
         return res.sendStatus(404).end();
     }
 });
@@ -27,10 +34,13 @@ router.post("/api/user/:id", async (req, res) => {
         let player = new Player({ id: req.params.id })
         await player.sync();
 
+        let updatedChangelog = [].push(player.changelog, req.body.changelog)
+
         let response = await player.dbUpdate({
             inventory: req.body.inventory,
-            changelog: req.body.changelog
+            changelog: updatedChangelog
         })
+        
         res.status(200).json(response).end()
 
     } catch (error) {

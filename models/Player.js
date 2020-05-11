@@ -109,7 +109,7 @@ class Player extends Table {
     };
     writeChangelog(command) {
         let change = {
-            on: moment().format('hh:mm a, MMMM Do, YYYY'),
+            on: moment(),
             command: command,
         }
         if (this.changelog.length > 9) {

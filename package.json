@@ -6,11 +6,13 @@
   "dependencies": {
     "express": "^4.17.1",
     "express-handlebars": "^4.0.4",
-    "googleapis": "^49.0.0",
     "moment": "^2.25.3",
     "mongodb": "^3.5.6"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "animejs": "^3.2.0",
+    "jquery": "^3.5.1"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
