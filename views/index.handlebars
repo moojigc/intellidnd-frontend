@@ -115,14 +115,14 @@
 
 
     {{/with}}
-    <div class="card">
+    <aside class="card">
         <h3 class="card-header">Change Log 📋</h3>
         <ul class="list-group list-group-flush" style="max-height: 15rem; overflow-y: auto;">
             {{#each changelog}}
             <li class="list-group-item changelog-item" data-time="{{on}}"><code>{{command}}</code></li>
             {{/each}}
         </ul>
-    </div>
+    </aside>
     <div class="row" style="justify-content: center;">
         <button class="btn btn-danger col-5 mr-4 reset">Reset <i class="fas fa-undo"></i></button>
         <button class="btn btn-light col-5 submit">Submit <i class="fas fa-save"></i></button>

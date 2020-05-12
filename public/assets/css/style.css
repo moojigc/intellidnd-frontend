@@ -105,13 +105,13 @@ card-body {
   margin-bottom: unset;
 }
 
-.form-control[readonly] {
+.form-control[readonly], .form-control {
   color: white;
   background-color: var(--boxshadow);
   border: unset;
   box-shadow: inset 0 0 2rem 0.05rem var(--dark);
 }
-.preloaded::placeholder {
+.form-control::placeholder {
   color: #ffcb51;
 }
 
@@ -167,6 +167,26 @@ card-body {
   background: var(--secondary);
   box-shadow: inset 0 0 0.3rem 0.1rem gold;
   color: white;
+}
+
+footer {
+  font-family: 'Bellota Text', cursive;
+  text-decoration: underline;
+  padding: 0.5rem;
+  margin: 0;
+  color: whitesmoke;
+  background-color: var(--secondary);
+  display: inline-flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+footer a {
+  margin: 0;
+  color: plum;
+}
+footer a:hover {
+  color: var(--primary);
 }
 
 @media screen and (max-width: 997px) {
