@@ -1,87 +1,107 @@
 const express = require("express"),
+    moment = require('moment'),
     router = express.Router(),
     Player = require('../models/Player'),
-    Guild = require('../models/Guild');
+    isEqual = require('lodash/isEqual'),
+    serverError = res => res.status(500).json({ message: 'Internal server error.', error: 500 }).end();
 
+// Renders the bot Guide
 router.get("/", async (req, res) => {
-    res.render('default', {});
+    try {
+        res.render('default', {});
+    } catch (error) {
+        console.trace(error)
+        serverError(res)
+    }
 });
 
+// Returns player data in JSON format
+router.get("/api/user/:id", async (req, res) => {
+    try {
+        let player = new Player({ id: req.params.id });
+        await player.sync()
+        res.status(200).json(player).end();
+    } catch (error) {
+        console.trace(error)
+        serverError(res)
+    }
+})
+
+// Most important page! Lets user see and update their data
 router.get("/login/:id", async (req, res) => {
     try {
         let player = new Player({ id: req.params.id })
         await player.sync();
         res.render('index', {
             player: player,
-            // To avoic typing these in over and over
-            money: {
-                gold: 'Gold',
-                silver: 'Silver',
-                copper: 'Copper',
-                platinum: 'Platinum',
-                electrum: 'Electrum'
-            }
         });
     } catch (error) {
-        console.error(error)
-        res.send({ message: 'Player not found!', error: 404 });
-        return res.sendStatus(404).end();
+        console.trace(error)
+        serverError(res)
     }
 });
 
-router.post("/api/user/:id", async (req, res) => {
+// Update route
+router.put("/api/user/:id", async (req, res) => {
     try {
+        // Create Player instance and sync it with database
         let player = new Player({ id: req.params.id })
         await player.sync();
+        // Add new logs from front-end to the player instance
+        player.changelog.push(req.body.changelog);
+        // Destructure the inventory Object from request body
+        let { gold, silver, copper, platinum, electrum, potions, weapons, misc } = req.body.inventory;
+        // Fix the numbers...
+        function correctTypes(category) {
+            // HTTP prot only sends strings, so you must convert strings to numbers
+            return category.map(item => {
+                return {
+                    name: item.name,
+                    quantity: parseInt(item.quantity)
+                }
+            })
 
-        let updatedChangelog = [].push(player.changelog, req.body.changelog)
-
-        let response = await player.dbUpdate({
-            inventory: req.body.inventory,
-            changelog: updatedChangelog
-        })
+        }
+        // Just running parseInt and correctTypes to fix the stupid numbers first...
+        const inventory = {
+            gold: parseInt(gold),
+            silver: parseInt(silver),
+            copper: parseInt(copper),
+            platinum: parseInt(platinum),
+            electrum: parseInt(electrum),
+            potions: correctTypes(potions),
+            weapons: correctTypes(weapons),
+            misc: correctTypes(misc)
+        }
         
-        res.status(200).json(response).end()
+        // Case that changes were detected
+        if (!isEqual(inventory, player.inventory)) {
+            let response = await player.dbUpdate({
+                inventory: inventory,
+                changelog: player.changelog,
+                lastUpdated: moment().format()
+            })
+            // Database responds positively
+            if (response.modifiedCount === 1) 
+                res.status(200).json({ message: 'Success!', status: 200 }).end()
+            // Database fails to update for some reason
+            else
+                res.status(404).json({ message: 'Could not update player. Please go back to Discord and try there first.', status: 404 })
+        }
+        // Case that no changes were detected
+        else {
+            res.status(202).json({ message: 'No changes detected!', status: 202 }).end()
+        }
 
     } catch (error) {
         console.error(error)
-        return res.sendStatus(500).end();
+        serverError(res)
     }
 });
 
-router.put("/api/burger/:id", async (req, res) => {
-    let myBurger = new Burger({ id: req.params.id })
-    let result;
-    try {
-        result = myBurger.dbUpdate({ devoured: req.body.devoured })
-
-        if (result.changedRows === 0) {
-            return res.status(404).end();
-        } else {
-            return res.status(200).end();
-        }
-    } catch (error) {
-        console.error(error)
-        return res.sendStatus(500).end();
-    }
-});
-
-router.delete("/api/burger/:id", async (req, res) => {
-    let myBurger = new Burger({ id: req.params.id })
-    try {
-        let result = await myBurger.dbDelete()
-        if (result.changedRows == 0) {
-            // If no rows were changed, then the ID must not exist, so 404
-            return res.status(404).end();
-        } else {
-            return res.status(200).end();
-        }
-    } catch (error) {
-        console.error(error)
-        return res.sendStatus(500).end();
-    }
-
-})
+// Decided for now, not to allow deletion through the web page. Discord is more secure.
+// CREATE route is impossible b/c users usually don't have direct access to their Discord user and server ID,
+// so they must do it through the bot itself
 
 // Export routes for server.js to use.
 module.exports = router;

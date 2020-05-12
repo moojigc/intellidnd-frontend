@@ -15,6 +15,7 @@ class Player extends Table {
         this.notificationsToDM = false;
         this.inventory = {};
         this.changelog = [];
+        this.lastUpdated = moment().format();
     }
     createInventory(prepack, goldCoins, silverCoins) {
         if (prepack === 'prepack') {
@@ -61,8 +62,7 @@ class Player extends Table {
                         name: "feet of hempen rope",
                         quantity: 100
                     }
-                ],
-                lastUpdated: moment().format("MMMM Do, hh:mm a")
+                ]
             };
             this.inventory = prepackaged;
         } else {
@@ -89,9 +89,8 @@ class Player extends Table {
                         name: "none",
                         quantity: 0
                     }
-                ],
-                lastUpdated: moment().format("MMMM Do, hh:mm a")
-                };
+                ]
+            };
             this.inventory = empty;
         };
         return this;
@@ -108,6 +107,7 @@ class Player extends Table {
         return this;
     };
     writeChangelog(command) {
+        this.lastUpdated = moment().format();
         let change = {
             on: moment(),
             command: command,

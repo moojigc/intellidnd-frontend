@@ -1,12 +1,13 @@
 <h1 data-id="{{player._id}}" class="player-name-display">Hi, <strong>{{player.name}}!</strong></h1>
 
+
 {{#with player}}
 <form>
     {{#with inventory}}
     <div class="row">
         <div class="col-lg-6">
             <div class="card">
-                <h3 class="card-header">Potions <i class="fas fa-prescription-bottle-alt"></i></h3>
+                <h3 class="card-header">Potions ⚗️</h3>
                 <div class="card-body">
                     {{#each potions}}
                     <div class="row potion-row" data-name="{{name}}" data-quantity="{{quantity}}">
@@ -21,7 +22,7 @@
         </div>
         <div class="col-lg-6">
             <div class="card">
-                <h3 class="card-header">Weapons <i class="fas fa-khanda"></i></h3>
+                <h3 class="card-header">Weapons ⚔️</h3>
                 <div class="card-body">
                     {{#each weapons}}
                     <div class="row weapon-row" data-name="{{name}}" data-quantity="{{quantity}}">
@@ -38,7 +39,7 @@
     <div class="row">
         <div class="col-lg-6">
             <div class="card">
-                <h3 class="card-header">Miscellaneous Items <i class="fas fa-briefcase"></i></h3>
+                <h3 class="card-header">Miscellaneous 🎒</h3>
                 <div class="card-body">
                     {{#each misc}}
                     <div class="row misc-row" data-name="{{name}}" data-quantity="{{quantity}}">
@@ -53,10 +54,10 @@
         </div>
         <div class="col-lg-6">
             <div class="card">
-                <h3 class="card-header">Money <i class="fas fa-coins"></i></h3>
+                <h3 class="card-header">Money <i class="fas fa-coins" style="color: gold;"></i></h3>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col gold" data-name="gold" data-quantity="{{gold}}">
+                        <div class="col">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">Gold</span>
@@ -106,6 +107,7 @@
                             </div>
                         </div>
                     </div>
+                    <p class="money-total"></p>
                 </div>
             </div>
         </div>
@@ -114,10 +116,10 @@
 
     {{/with}}
     <div class="card">
-        <h3 class="card-header">Change Log <i class="fas fa-clipboard-list"></i></h3>
-        <ul class="list-group list-group-flush">
+        <h3 class="card-header">Change Log 📋</h3>
+        <ul class="list-group list-group-flush" style="max-height: 15rem; overflow-y: auto;">
             {{#each changelog}}
-            <li class="list-group-item">{{on}}: <code>{{command}}</code></li>
+            <li class="list-group-item changelog-item" data-time="{{on}}"><code>{{command}}</code></li>
             {{/each}}
         </ul>
     </div>
