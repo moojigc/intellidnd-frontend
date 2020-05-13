@@ -41,7 +41,7 @@ router.get("/login/:id", async (req, res) => {
     }
 });
 
-// Update route
+// Update route. Also used for deleting of single items bc it uses the same logic
 router.put("/api/user/:id", async (req, res) => {
     try {
         // Create Player instance and sync it with database
@@ -99,9 +99,10 @@ router.put("/api/user/:id", async (req, res) => {
     }
 });
 
-// Decided for now, not to allow deletion through the web page. Discord is more secure.
+// Decided for now, not to allow total player deletion through the webpage. Discord is more secure.
+// In the near future, I'll add user auth
 // CREATE route is impossible b/c users usually don't have direct access to their Discord user and server ID,
-// so they must do it through the bot itself
+// so they must run /create command in Discord server directly first.
 
 // Export routes for server.js to use.
 module.exports = router;

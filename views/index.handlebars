@@ -1,12 +1,11 @@
 <h1 data-id="{{player._id}}" class="player-name-display">Hi, <strong>{{player.name}}!</strong></h1>
 
-
 {{#with player}}
 <form>
     {{#with inventory}}
     <div class="row">
         <div class="col-lg-6">
-            <div class="card">
+            <div class="card potion-card">
                 <h3 class="card-header">Potions ⚗️</h3>
                 <div class="card-body">
                     {{#each potions}}
@@ -18,10 +17,11 @@
                         {{> input-nondynamic}}
                     </div>
                 </div>
+                {{> add-btn}}
             </div>
         </div>
         <div class="col-lg-6">
-            <div class="card">
+            <div class="card weapon-card">
                 <h3 class="card-header">Weapons ⚔️</h3>
                 <div class="card-body">
                     {{#each weapons}}
@@ -33,12 +33,13 @@
                         {{> input-nondynamic}}
                     </div>
                 </div>
+                {{> add-btn}}
             </div>
         </div>
     </div>
     <div class="row">
         <div class="col-lg-6">
-            <div class="card">
+            <div class="card misc-card">
                 <h3 class="card-header">Miscellaneous 🎒</h3>
                 <div class="card-body">
                     {{#each misc}}
@@ -50,6 +51,7 @@
                         {{> input-nondynamic}}
                     </div>
                 </div>
+                {{> add-btn}}
             </div>
         </div>
         <div class="col-lg-6">

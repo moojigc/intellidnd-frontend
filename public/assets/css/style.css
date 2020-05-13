@@ -7,6 +7,7 @@
   --fifth: #f5e6e8;
   --accent: #d9b9f5;
   --boxshadow: #00000047;
+  --gold: #ffcb51;
   overflow-x: hidden;
 }
 
@@ -82,9 +83,19 @@ article {
 card-body {
   background-color: var(--third);
 }
-
 .card-body {
   padding: 5px;
+}
+
+.potion-card > .card-body, .weapon-card > .card-body, .misc-card > .card-body {
+  padding: 5px 0px 5px 10px;
+  max-height: 15rem;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  scrollbar-color: #cf4aff transparent;
+  scrollbar-width: thin;
+  scroll-padding: 0;
+  scroll-margin-block: initial;
 }
 
 .card li,
@@ -104,15 +115,28 @@ card-body {
 .card .row:last-of-type {
   margin-bottom: unset;
 }
+.add-btn {
+  border-radius: 0 0 0.25rem 0.25rem;
+  border: 2px solid var(--third);
+}
 
-.form-control[readonly], .form-control {
+.form-control[readonly],
+.form-control,
+.form-control:focus {
   color: white;
   background-color: var(--boxshadow);
-  border: unset;
+  border: 1px solid var(--boxshadow);
   box-shadow: inset 0 0 2rem 0.05rem var(--dark);
 }
+.form-control:focus {
+  border: 1px solid white;
+}
+
 .form-control::placeholder {
-  color: #ffcb51;
+  color: var(--gold);
+}
+.del-btn {
+  border-radius: 0.25rem 0 0 0.25rem !important;
 }
 
 .btn-primary {
@@ -170,7 +194,7 @@ card-body {
 }
 
 footer {
-  font-family: 'Bellota Text', cursive;
+  font-family: "Bellota Text", cursive;
   text-decoration: underline;
   padding: 0.5rem;
   margin: 0;
