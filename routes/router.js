@@ -27,6 +27,10 @@ router.get("/api/user/:id", async (req, res) => {
     }
 })
 
+router.get("/login/", async (req, res) => {
+
+})
+
 // Most important page! Lets user see and update their data
 router.get("/login/:id", async (req, res) => {
     try {
@@ -53,14 +57,21 @@ router.put("/api/user/:id", async (req, res) => {
         let { gold, silver, copper, platinum, electrum, potions, weapons, misc } = req.body.inventory;
         // Fix the numbers...
         function correctTypes(category) {
+            console.log(category)
             // HTTP prot only sends strings, so you must convert strings to numbers
-            return category.map(item => {
-                return {
-                    name: item.name,
-                    quantity: parseInt(item.quantity)
-                }
-            })
-
+            if (!category || category === "") {
+                return [{
+                    name: 'none',
+                    quantity: 0
+                }]
+            } else {
+                return category.map(item => {
+                    return {
+                        name: item.name,
+                        quantity: parseInt(item.quantity)
+                    }
+                })
+            }
         }
         // Just running parseInt and correctTypes to fix the stupid numbers first...
         const inventory = {
