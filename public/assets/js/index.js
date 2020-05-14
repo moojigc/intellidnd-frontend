@@ -41,7 +41,7 @@ const $submitBtn = $(".submit"),
 // Player ID
 const getPlayerID = () => {
     if (!localStorage.getItem("id")) {
-        localStorage.setItem("id", $playerID);
+        localStorage.setItem("id", $(".player-name-display").data("id"));
         return $(".player-name-display").data("id");
     } else return localStorage.getItem("id");
 };
