@@ -1,0 +1,143 @@
+{{> navbar}}
+<main class="container-lg wrapper">
+    <header>
+        <h1>Hi, <strong>{{player.name}}!</strong></h1>
+    </header>
+
+    {{#with player}}
+    <form>
+        {{#with inventory}}
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="card potion-card">
+                    <h3 class="delete-alert alert alert-success card-header"
+                        style="display: none;">
+                        fuck
+                    </h3>
+                    <h3 class="card-header">Potions ⚗️
+                    </h3>
+                    <div class="card-body">
+                        {{#each potions}}
+                        <div class="row potion-row" data-name="{{name}}" data-quantity="{{quantity}}">
+                            {{> input}}
+                        </div>
+                        {{/each}}
+                        <div class="row potion-row">
+                            {{> input-nondynamic}}
+                        </div>
+                    </div>
+                    {{> add-btn}}
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card weapon-card">
+                    <h3 class="card-header">Weapons ⚔️</h3>
+                    <div class="card-body">
+                        {{#each weapons}}
+                        <div class="row weapon-row" data-name="{{name}}" data-quantity="{{quantity}}">
+                            {{> input}}
+                        </div>
+                        {{/each}}
+                        <div class="row weapon-row">
+                            {{> input-nondynamic}}
+                        </div>
+                    </div>
+                    {{> add-btn}}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="card misc-card">
+                    <h3 class="card-header">Miscellaneous 🎒</h3>
+                    <div class="card-body">
+                        {{#each misc}}
+                        <div class="row misc-row" data-name="{{name}}" data-quantity="{{quantity}}">
+                            {{> input}}
+                        </div>
+                        {{/each}}
+                        <div class="row misc-row">
+                            {{> input-nondynamic}}
+                        </div>
+                    </div>
+                    {{> add-btn}}
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card">
+                    <h3 class="card-header">Money <i class="fas fa-coins" style="color: gold;"></i></h3>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Gold</span>
+                                    </div>
+                                    <input type="number" class="gold form-control preloaded" placeholder="{{gold}}"
+                                        value="{{gold}}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6" data-name="silver" data-quantity="{{silver}}">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Silver</span>
+                                    </div>
+                                    <input type="number" class="silver form-control preloaded" placeholder="{{silver}}"
+                                        value="{{silver}}">
+                                </div>
+                            </div>
+                            <div class="col-sm-6" data-name="silver" data-quantity="{{copper}}">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Copper</span>
+                                    </div>
+                                    <input type="number" class="copper form-control preloaded" placeholder="{{copper}}"
+                                        value="{{copper}}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="justify-content: center;">
+                            <div class="col-sm-6">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Platinum</span>
+                                    </div>
+                                    <input type="number" class="platinum form-control preloaded"
+                                        placeholder="{{platinum}}" value="{{platinum}}">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Electrum</span>
+                                    </div>
+                                    <input type="number" class="electrum form-control preloaded"
+                                        placeholder="{{electrum}}" value="{{electrum}}">
+                                </div>
+                            </div>
+                        </div>
+                        <p class="money-total"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        {{/with}}
+        <aside class="card">
+            <h3 class="card-header">Change Log 📋</h3>
+            <ul class="list-group list-group-flush" style="max-height: 15rem; overflow-y: auto;">
+                {{#each changelog}}
+                <li class="list-group-item changelog-item" data-time="{{on}}"><code>{{command}}</code></li>
+                {{/each}}
+            </ul>
+        </aside>
+        <div class="row" style="justify-content: center;">
+            <button class="btn btn-danger col-5 mr-4 reset">Reset <i class="fas fa-undo"></i></button>
+            <button class="btn btn-light col-5 submit">Submit <i class="fas fa-save"></i></button>
+        </div>
+    </form>
+    {{/with}}
+</main>

@@ -19,3 +19,28 @@ function redirect() {
 getLogin();
 $returnLoginBtn.on('click', redirect);
 
+function handleLogin() {
+    // Actual login with passport
+    async function loginRequest(data) {
+        try {
+            return await $.post({
+                url: '/user/login',
+                data: data
+            })
+        } catch (error) {
+            return error;
+        }
+    }
+    // Event listener
+    $('.login-btn').on('click', async event => {
+        event.preventDefault();
+        let user = {
+            username: $('.username').val().trim(),
+            password: $('.password').val().trim()
+        }
+        // console.log(user)
+        let response = await loginRequest(user)
+        console.log(response)
+    })
+}
+// handleLogin()

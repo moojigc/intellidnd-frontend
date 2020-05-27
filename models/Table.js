@@ -43,6 +43,14 @@ class Table {
         else 
             return await this.dbAction(db.db(dnd).collection(this.collection).findOne({ _id: this._id }));
     }
+    async find(params) {
+        let db = await dbConnect();
+        return await this.dbAction(db.db(dnd).collection(this.collection).findOne(params));
+    }
+    async findByWebUserId(id) {
+        let db = await dbConnect();
+        return (await this.dbAction(db.db(dnd).collection(this.collection).find({ webUserId: id }))).toArray();
+    }
     async dbUpsert() {
         let db = await dbConnect();
         return await this.dbAction(db.db(dnd).collection(this.collection).updateOne(
