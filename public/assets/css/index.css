@@ -1,0 +1,64 @@
+:root {
+    --default-font: 'Raleway', sans-serif;
+    --font-size-m: 16px;
+    --font-size-l: 1.5rem;
+    --font-size-s: 0.75rem;
+
+    --color-text: rgb(12, 11, 11);
+
+    --color-1: hsl(201, 100%, 83%);
+    --color-2: hsl(190, 84%, 76%);
+    --color-3: hsl(221, 33%, 36%);
+    --color-4: hsl(221, 33%, 36%);
+    --color-5: hsl(325, 18%, 62%);
+
+    font-family: var(--default-font);
+    font-size: var(--font-size-m);
+    color: var(--color-text);
+    background-color: var(--color-4);
+}
+
+.light {
+    background-color: white;
+}
+.dark {
+    --color-1: hsl(201, 100%, 50%);
+    --color-2: hsl(190, 84%, 50%);
+    --color-3: hsl(221, 33%, 20%);
+    --color-4: hsl(221, 33%, 10%);
+    --color-5: hsl(325, 18%, 10%);
+    --color-text: rgb(236, 236, 236);
+}
+
+* {
+    font-family: var(--default-font);
+    margin: 0.5em;
+}
+
+button {
+    font-size: var(--font-size-m);
+    padding: 0.5rem 0.75rem;
+    background-color: var(--color-2);
+    border-width: 1px;
+    border-color: var(--color-2);
+    border-style: solid;
+    border-radius: 0.3rem;
+    transition: 250ms;
+}
+
+
+button.large {
+    font-size: 1.5rem;
+    padding: 1rem;
+}
+
+button:hover {
+    opacity: 70%;
+    cursor: pointer;
+}
+
+button:focus {
+    border-width: 1px;
+    border-color: var(--color-3);
+    border-style: solid;
+}

@@ -1,23 +1,27 @@
-import axios, { AxiosRequestConfig } from 'axios';
-import { devError } from '../utils/error';
+import axios, { Method, AxiosRequestConfig, AxiosError } from 'axios';
 
-const request = async (options: AxiosRequestConfig) => {
-	try {
-		const { data } = await axios({
-			...options,
-			withCredentials: true,
-			url: `/api/v1/${options.url}`,
-		});
-		return data;
-	} catch (error) {
-		devError(error);
-		return {
-			flash: {
-				message: 'Bad request',
-				type: 'error',
-			},
-		};
-	}
-};
+const BASE_URL = /intellidnd.com/i.test(location.host)
+    ? 'https://api.intellidnd.com/v1'
+    : 'http://localhost:4000/v1'
 
-export default request;
+export default async function request(
+	target: string,
+	method: Method = 'GET',
+    token?: string,
+	options: AxiosRequestConfig = {}
+) {
+
+    const { data } = await axios({
+        url: BASE_URL + target,
+        method: method,
+        headers: token
+            ? {
+                Authorization: `Bearer ${token}`
+                }
+            : {},
+        withCredentials: true,
+        ...options
+    });
+
+    return data;
+}
