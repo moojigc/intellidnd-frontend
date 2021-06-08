@@ -4,7 +4,7 @@
 		name: string;
 		label: string;
 		type?: 'text' | 'number' | 'positive_number' | 'date' | 'password' | 'email';
-		validate?: (e: string | number) => { ok: boolean; message?: string; };
+		validate?: (e: string | number, values: any) => { ok: boolean; message?: string; };
         errorMessage?: string;
         defaultValue?: string;
         required?: boolean;
@@ -21,6 +21,18 @@
     const _handleSubmit = (_) => {
 
         fields.forEach((f, i) => {
+
+            if (f.validate) {
+
+                const { ok, message } = f.validate(values[f.name], values);
+
+                if (!ok) {
+
+                    submittable = false;
+                    f.errorMessage = message;
+                    fields[i] = f;
+                }
+            }
 
             if (!values[f.name] && f.required) {
 
@@ -83,7 +95,7 @@
             let ok = false;
             let errorMsg = null;
 
-            const ret = field.validate(values[field.name]);
+            const ret = field.validate(values[field.name], values);
 
             ok = ret.ok;
             errorMsg = ret.message;

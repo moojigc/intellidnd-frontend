@@ -1,5 +1,4 @@
 <script lang='ts'>
-    
     export let message = 'Unknown server error.';
     export let hidden = true;
 

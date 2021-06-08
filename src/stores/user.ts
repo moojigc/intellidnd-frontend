@@ -122,6 +122,24 @@ class User implements UserAttributes {
         }
     }
 
+    private async _publicRequest(target: string, method?: Method, options?: AxiosRequestConfig) {
+
+        this.set({ fetching: true });
+
+        try {
+
+            return await request(target, method, null, options);
+        }
+        catch (e) {
+
+            throw e;
+        }
+        finally {
+
+            this.set({ fetching: false });
+        }
+    }
+
     private async _request<T = any>(target: string, method?: Method, options?: AxiosRequestConfig): Promise<T> {
 
         this.set({ fetching: true });
@@ -218,28 +236,29 @@ class User implements UserAttributes {
         return characters;
     }
 
+    public async signup(details: {
+        email: string;
+        password: string;
+        verify: string;
+        firstName?: string;
+        lastName?: string;
+        username?: string;
+    }) {
+
+        await this._publicRequest('/user/signup', 'POST', {
+            data: details
+        });
+    }
+
     public async login(identifier: string, password: string) {
 
-        this.set({ fetching: true });
+        const user = await this._publicRequest('/user/login', 'POST', {
+            data: {
+                identifier, password
+            }
+        });
 
-        try {
-
-            const user = await request('/user/login', 'POST', null, {
-                data: {
-                    identifier, password
-                }
-            });
-            this.set(user);
-        }
-        catch (e) {
-
-            throw e;
-        }
-        finally {
-
-            this.set({ fetching: false });
-        }
-
+        this.set(user);
     }
 
     public async logout() {
