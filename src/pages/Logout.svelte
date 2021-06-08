@@ -3,9 +3,12 @@
     import { navigate } from 'svelte-routing';
 	import user from '../stores/user';
 
-	onMount(async () => {
-		await user.logout();
-        navigate('/login');
+	onMount(() => {
+		console.log('WTFFF')
+		user.logout().then(() => {
+			
+			navigate('/login');
+		})
 	});
 </script>
 

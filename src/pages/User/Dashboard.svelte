@@ -1,30 +1,60 @@
-<script>
-    import { onMount } from "svelte";
-    import Form from "../../components/Form.svelte";
-    import user from "../../stores/user";
+<script lang="ts">
+	import type { Character, Coins, Wallet } from '../../types';
+	import { onMount } from 'svelte';
+	import Button from '../../components/Button.svelte';
+	import Form from '../../components/Form.svelte';
+	import user from '../../stores/user';
 
-    onMount(async () => {
+	const fields = (char: Character): Form['$$prop_def']['fields'] =>
+		['copper', 'silver', 'gold', 'electrum', 'platinum'].map((coin) => ({
+			name: coin,
+			label: coin[0].toUpperCase() + coin.substring(1),
+			defaultValue: char.inventory.wallet[coin],
+			type: 'positive_number',
+			validate: (v: number) => {
+				let ok = true;
+				let message: string;
 
-        await user.getProfile();
-        await user.getCharacters();
-    });
+				if (!Number.isInteger(v)) {
+					ok = false;
+					message = 'Cannot accept decimals.';
+				} else if (!Number.isSafeInteger(v)) {
+					ok = false;
+					message = `Cannot exceed ${Number.MAX_SAFE_INTEGER.toLocaleString()}`;
+				}
+				return {
+					ok,
+					message
+				};
+			}
+		}));
+
+	onMount(async () => {
+		await user.getProfile();
+		await user.getCharacters();
+	});
 </script>
 
 <main>
-    <h1>
-        Welcome, {$user.name}.
-    </h1>
-    {#each Object.values($user.characters || {}) as character}
-        <div>
-            <h2>{character.name}</h2>
-            <Form
-                fields={['copper', 'silver', 'gold', 'electrum', 'platinum'].map(c => ({
-                    name: c,
-                    label: c[0].toUpperCase() + c.substring(1),
-                    defaultValue: character.inventory.wallet[c].toString(),
-                    type: 'positive_number'
-                }))} 
-            />
-        </div>
-    {/each}
+	{#if $user.token}
+		<h1>
+			Welcome, {$user.name}.
+		</h1>
+		{#each Object.values($user.characters || {}) as character}
+			<div>
+				<h2>{character.name}</h2>
+				<Form
+					handleSubmit={async (values) => {
+
+                        await character.inventory.wallet.update(values);
+                    }}
+					fields={fields(character)}
+				>
+					<Button type="submit">Submit</Button>
+				</Form>
+			</div>
+		{/each}
+	{:else}
+		<h1>Redirecting you...</h1>
+	{/if}
 </main>

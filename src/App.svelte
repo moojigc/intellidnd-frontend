@@ -6,6 +6,7 @@
     import Login from './pages/User/Login.svelte';
     import Renderer from './components/Renderer.svelte';
     import Logout from './pages/Logout.svelte';
+    import Error from './pages/User/Error.svelte';
 
     const routes = {
         '/login': {
@@ -23,6 +24,10 @@
         '/logout': {
             name: 'Logout',
             comp: Logout
+        },
+        '/error': {
+            name: 'Error',
+            comp: Error
         }
     };
 
@@ -31,11 +36,9 @@
 <ErrorBox/>
 <Router {url}>
 	<Nav />
-	<div>
-        {#each Object.entries(routes) as [route, props]}
-            <Route path={route}>
-                <Renderer comp={props.comp} title={props.name} />
-            </Route>
-        {/each}
-	</div>
+    {#each Object.entries(routes) as [route, props]}
+        <Route path={route}>
+            <Renderer comp={props.comp} title={props.name} />
+        </Route>
+    {/each}
 </Router>

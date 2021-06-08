@@ -1,101 +1,117 @@
 import type { AxiosError, AxiosRequestConfig, Method } from 'axios';
 import { writable, Writable } from 'svelte/store';
+import type { Character, CharacterStatic } from '../types';
 import getMap from '../utils/getMap';
 import request from '../utils/request';
 
 interface UserAttributes {
+    id: string;
     email: string;
     name: string;
     token: string;
     expiresAt: number;
-    characters?: Record<string, any>;
+    characters: Record<string, Character>;
     fetching?: boolean;
-    isLoggedOut?: boolean;
 }
 
 class User implements UserAttributes {
 
+    public id: string;
     public name: string;
     public email: string;
     public token: string;
     public expiresAt: number;
-    public characters?: Record<string, any>;
+    public characters: Record<string, Character>;
     public fetching = false;
-    public isLoggedOut?: boolean;
 
-    public subscribe: Writable<UserAttributes>['subscribe'];
+    private _blank = {
+        id: null,
+        email: '',
+        name: '',
+        token: null,
+        characters: {},
+        expiresAt: null,
+        fetching: false
+    };
+
+    public subscribe: Writable<Partial<UserAttributes>>['subscribe'];
     public set(values: Partial<UserAttributes>) {
 
         for (const k in values) {
 
             this[k] = values[k];
-            this._set(k as keyof UserAttributes, values[k]);
+
+            this._set(this);
         }
+
+        this._setLs(values);
     }
 
     constructor() {
 
-        const { subscribe, update } = writable({
-            email: '',
-            name: '',
-            token: '',
-            expiresAt: 0,
-            fetching: false,
-        });
+        const { subscribe, set } = writable(this._getLs() || {} as UserAttributes);
     
         this.subscribe = subscribe;
-        this._update = update;
 
+        this._set = set;
+        this._clear = () => {
+
+            this.set(this._blank);
+        }
         this._init();
     }
+
+    private _set: Writable<UserAttributes | {}>['set'];
 
     private _init() {
 
         const ls = this._getLs();
-        this.set(ls);
 
-        if (!ls.name) {
+        if (!ls) {
 
-            this._set('isLoggedOut', true);
+            this.set(this._blank);
         }
+        else {
+            
+            this.set({
+                ...ls,
+                fetching: false
+            });
+        }
+
     }
 
-    private _getLs(): Partial<UserAttributes> {
+    private _clear: () => void;
 
-        return JSON.parse(localStorage.getItem('user') || '{}');
+    private _getLs(): Partial<UserAttributes> | null {
+
+        const string = localStorage.getItem('user');
+        return string ? JSON.parse(string || '{}') : null;
     }
     private _setLs(user: Partial<UserAttributes>) {
 
-        const existing = this._getLs();
-        const data = {
-            ...existing,
-            ...user
-        };
-        delete data.token;
-        localStorage.setItem('user', JSON.stringify(data));
+        const ls = this._getLs() || {};
+        
+        for (const k in user) {
+
+            if (['token', 'fetching'].includes(k)) { continue; }
+
+            ls[k] = user[k];
+        }
+
+        localStorage.setItem('user', JSON.stringify(ls));
     }
 
-    private _update: Writable<UserAttributes>['update'];
-    private _set(field: string, value: UserAttributes[keyof UserAttributes]) {
-
-        this[field] = value;
-        this._update(user => {
-            
-            user[field] = value;
-
-            this._setLs(user);
-            
-            return user;
-        });
-    }
     private async _getRefreshToken() {
 
         try {
                     
             const data = await request('/user/session/refresh', 'POST');
 
-            this._set('token', data.token);
-            this._set('expiresAt', data.expiresAt);
+            this.set({
+                token: data.token,
+                expiresAt: data.expiresAt
+            });
         }
         catch (e) {
 
@@ -123,10 +139,14 @@ class User implements UserAttributes {
 
             if ('response' in e) {
 
-                if (e.response.status === 401) {
+                if (!e.response || e.response.status === 500) {
+
+                    location.assign('/error');
+                }
+                else if (e.response.status === 401) {
 
                     try {
-                        console.log('getting refresh token')
+
                         await this._getRefreshToken();
                     }
                     catch (e) {
@@ -149,28 +169,93 @@ class User implements UserAttributes {
             }
         }
         finally {
-
             this.set({ fetching: false });
         }
     }
 
+    private _initCharacters(chars: CharacterStatic[]) {
+
+        const characters: Character[] = chars.map(char => ({
+            ...char,
+            update: async (options) => {
+                
+                const res = await this._request(`/characters/${char.id}`, 'PATCH', {
+                    data: options
+                });
+
+                return res;
+            },
+            inventory: {
+                ...char.inventory,
+                addItem: async (item) => {
+
+                    return await this._request(`/characters/${char.id}/inventory`, 'POST', {
+                        data: item
+                    });
+                },
+                removeItem: async (itemId) => {
+
+                    await this._request(`/characters/${char.id}/inventory/${itemId}`, 'DELETE');
+                },
+                updateItem: async (itemId, item) => {
+
+                    return await this._request(`/characters/${char.id}/inventory/${itemId}`, 'PATCH', {
+                        data: item
+                    });
+                },
+                wallet: {
+                    ...char.inventory.wallet,
+                    update: async (coins) => {
+
+                        return await this._request(`/characters/${char.id}/wallet`, 'PATCH', {
+                            data: coins
+                        });
+                    },
+                }
+            }
+        }));
+
+        return characters;
+    }
+
     public async login(identifier: string, password: string) {
 
-        const user = await request('/user/login', 'POST', null, {
-            data: {
-                identifier, password
-            }
-        });
+        this.set({ fetching: true });
 
-        this.set(user);
-        this.set({ isLoggedOut: false });
+        try {
+
+            const user = await request('/user/login', 'POST', null, {
+                data: {
+                    identifier, password
+                }
+            });
+            this.set(user);
+        }
+        catch (e) {
+
+            throw e;
+        }
+        finally {
+
+            this.set({ fetching: false });
+        }
+
     }
 
     public async logout() {
 
-        await this._request('/user/logout', 'POST');
+        this.set({ fetching: true });
 
-        this.set({ isLoggedOut: true, token: null });
+        try {
+
+            await request('/user/logout', 'POST', this.token);
+        }
+        catch (e) {}
+        finally {
+            
+            this._clear();
+            localStorage.removeItem('user');
+        }
     }
 
     public async getProfile() {
@@ -184,7 +269,7 @@ class User implements UserAttributes {
 
         const chars = await this._request<any[]>('/characters');
 
-        this.set({ characters: getMap(chars, 'id') })
+        this.set({ characters: getMap(this._initCharacters(chars), 'id') })
     }
 }
 

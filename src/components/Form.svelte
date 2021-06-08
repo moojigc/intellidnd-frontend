@@ -1,24 +1,20 @@
 <script lang="ts">
-import { onMount } from "svelte";
-import App from "../App.svelte";
-
-
-
+    import { onMount } from "svelte";
 	interface Field {
 		name: string;
 		label: string;
 		type?: 'text' | 'number' | 'positive_number' | 'date' | 'password' | 'email';
-		validate?: (e: string) => { ok: boolean; message?: string; };
+		validate?: (e: string | number) => { ok: boolean; message?: string; };
         errorMessage?: string;
         defaultValue?: string;
         required?: boolean;
 	}
 
 	export let fields: Field[];
-	export let handleSubmit: (values: Record<string, string>) => void;
+	export let handleSubmit: (values: any) => void | Promise<void>;
     
     let submittable = true;
-	const values: Record<string, string> = {};
+	const values: Record<string, any> = {};
     $: values;
     $: submittable = fields.filter(f => f.required && !values[f.name]).length === 0;
     
@@ -31,6 +27,18 @@ import App from "../App.svelte";
                 submittable = false;
                 f.errorMessage = 'required';
                 fields[i] = f;
+
+                if (f.type) {
+
+                    switch (f.type) {
+                        case 'positive_number':
+                        case 'number':
+                            values[f.name] = Number(values[f.name]);
+                            break;
+                        default: 
+                            break;
+                    }
+                }
             }
         });
 
@@ -49,22 +57,23 @@ import App from "../App.svelte";
 			value: string;
 			name: string;
 		};
-        const { type, validate } = field;
 
         let value: any = target.value;
 
-        if (type) {
+        if (field.type) {
 
-            switch (type) {
+            switch (field.type) {
+                case 'positive_number':
                 case 'number':
-                    value = Number(value);
+                    value = Number(value.replace(/,/g, ''));
+                    target.value = value.toLocaleString();
                     break;
                 default: 
                     break;
             }
         }
 
-        values[target.name] = target.value;
+        values[target.name] = value;
 	};
 
     const handleValidate = (field: Field) => {
@@ -103,8 +112,12 @@ import App from "../App.svelte";
 
         fields.forEach(f => {
             
-            values[f.name] = f.defaultValue || '';
-            document.getElementById('user-' + f.name).setAttribute('value', f.defaultValue || '');
+            values[f.name] = f.defaultValue ?? '';
+            const formatted = /number|integer/.test(f.type)
+                ? Number(values[f.name] ?? 0).toLocaleString()
+                : values[f.name]; 
+            document.getElementById('user-' + f.name).setAttribute('value', formatted);
+            document.getElementById('user-' + f.name).setAttribute('type', /number|integer/.test(f.type) ? 'text' : f.type);
         });
     })
 </script>
@@ -112,8 +125,7 @@ import App from "../App.svelte";
 <style lang="scss">
     form {
         max-width: 500px;
-        margin-left: auto;
-        margin-right: auto;
+        margin: 1rem auto 0;
     }
     .form-error {
         color: rgb(255, 104, 104);

@@ -1,41 +1,46 @@
 <script>
     import { user } from '../stores/user';
     import { Link } from "svelte-routing";
-import Button from './Button.svelte';
+
+    $: {console.log($user.token)}
 </script>
 
-<nav>
-    <div>
-        <img src="../assets/images/primary-icon.png" alt="logo">
+<div>
+    <nav>
+        <div>
+            <img src="../assets/images/primary-icon.png" alt="logo">
+        </div>
+        <Link to={$user.token ? '/dashboard' : '/'}>Home</Link>
+        {#if $user.token}
+            <Link to="/logout">Logout</Link>
+        {:else}
+            <Link to="/login">Login</Link>
+        {/if}
+    </nav>
+    <div class="progress bar {$user.fetching ? 'slide-in' : 'slide-out'}">
+        <div class="indeterminate"></div>
     </div>
-    <Link to={$user.isLoggedOut ? '/' : '/dashboard'}>Home</Link>
-    {#if $user.isLoggedOut}
-        <Link to="/login">Login</Link>
-    {:else}
-        <Link to="/logout">Logout</Link>
-    {/if}
-</nav>
-<div class="progress bar {$user.fetching ? 'slide-in' : 'slide-out'}">
-    <div class="indeterminate"></div>
 </div>
 
 <style lang='scss'>
     @keyframes slide-in {
-        from { height: 0; }
-        to { height: 4px; }
+        from { opacity: 0; }
+        to { opacity: 1; }
     }
     @keyframes slide-out {
-        from { height: 4px; }
-        to { height: 0px; }
+        from { opacity: 1; }
+        to { opacity: 0; }
     }
     .bar {
+        position: relative;
+
         margin: 0;
         &.slide-in {
             animation: slide-in 500ms;
         }
         &.slide-out {
             animation: slide-out 250ms;
-            height: 0px;
+            opacity: 0;
         }
     }
     nav {

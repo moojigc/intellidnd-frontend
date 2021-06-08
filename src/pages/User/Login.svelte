@@ -11,7 +11,7 @@
             type: 'text' as const,
             required: true,
             validate: (v) => ({
-                ok: /(.*?)@(.*?)/.test(v),
+                ok: /^\S+@\S+$/.test(v),
                 message: 'Please enter a valid email address.'
             }),
             defaultValue: $user.email
@@ -39,7 +39,11 @@
 
                 if (e.response?.status === 401) {
 
-                    fields[1].errorMessage = `That wasn't right! Try again?`
+                    fields.forEach((f, i) => {
+
+                        f.errorMessage = `That wasn't right! Try again?`;
+                        fields[i] = f;
+                    });
                 }
             });
     }
