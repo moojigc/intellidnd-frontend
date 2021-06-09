@@ -2,7 +2,7 @@
     import { user } from '../stores/user';
     import { Link } from "svelte-routing";
 
-    $: {console.log($user.token)}
+    export let title = '';
 </script>
 
 <div>
@@ -10,11 +10,10 @@
         <div>
             <img src="../assets/images/primary-icon.png" alt="logo">
         </div>
-        <Link to={$user.token ? '/dashboard' : '/'}>Home</Link>
-        {#if $user.token}
-            <Link to="/logout">Logout</Link>
+        {#if title}
+            <Link style='flex-grow: 0.5' to={window.location.pathname}>{title}</Link>
         {:else}
-            <Link to="/login">Login</Link>
+            <Link style='flex-grow: 0.5' to={$user.token ? '/dashboard' : '/'}>Home</Link> 
         {/if}
     </nav>
     <div class="progress bar {$user.fetching ? 'slide-in' : 'slide-out'}">

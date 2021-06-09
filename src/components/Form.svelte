@@ -28,7 +28,6 @@
 
                 if (!ok) {
 
-                    submittable = false;
                     f.errorMessage = message;
                     fields[i] = f;
                 }
@@ -36,20 +35,26 @@
 
             if (!values[f.name] && f.required) {
 
-                submittable = false;
                 f.errorMessage = 'required';
                 fields[i] = f;
+            }
 
-                if (f.type) {
+            if (f.type) {
 
-                    switch (f.type) {
-                        case 'positive_number':
-                        case 'number':
-                            values[f.name] = Number(values[f.name]);
-                            break;
-                        default: 
-                            break;
-                    }
+                switch (f.type) {
+                    case 'number':
+                        values[f.name] = Number(values[f.name]);
+                        break;
+                    case 'positive_number':
+                        values[f.name] = Number(values[f.name]);
+
+                        if (values[f.name] < 0) {
+
+                            f.errorMessage = 'Cannot be below 0';
+                        }
+                        break;
+                    default: 
+                        break;
                 }
             }
         });
@@ -134,19 +139,8 @@
     })
 </script>
 
-<style lang="scss">
-    form {
-        max-width: 500px;
-        margin: 1rem auto 0;
-    }
-    .form-error {
-        color: rgb(255, 104, 104);
-        font-size: 0.75em;
-    }
-</style>
-
-<form class='form' on:submit|preventDefault={_handleSubmit}>
-	{#each fields as field}
+<form on:submit|preventDefault={_handleSubmit}>
+    {#each fields as field}
         <div class='row'>
             <label for={field.name}>{field.label}</label>
             <input
@@ -163,6 +157,16 @@
                 <div class='form-error'>{field.errorMessage}</div>
             {/if}
         </div>
-	{/each}
-	<slot />
+    {/each}
+    <slot /> 
 </form>
+
+<style lang="scss">
+    form {
+        margin: 1rem auto 0;
+    }
+    .form-error {
+        color: rgb(255, 104, 104);
+        font-size: 0.75em;
+    }
+</style>

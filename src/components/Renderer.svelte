@@ -1,4 +1,6 @@
 <script lang="ts">
+	import Nav from './Nav.svelte';
+
 	export let displayTitle: string;
 	export let title: string;
 	export let comp: any;
@@ -8,6 +10,7 @@
 	}
 </script>
 
+<Nav {title}/>
 {#if displayTitle}
 	<h1>{displayTitle}</h1>
 {/if}

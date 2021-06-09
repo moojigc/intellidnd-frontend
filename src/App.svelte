@@ -1,6 +1,6 @@
 <script>
 	import { Router, Link, Route } from 'svelte-routing';
-	import ErrorBox from './components/ErrorBox.svelte';
+	import Notification from './components/Notification.svelte';
 	import Nav from './components/Nav.svelte';
 	import Dashboard from './pages/User/Dashboard.svelte';
 	import Login from './pages/User/Login.svelte';
@@ -8,15 +8,14 @@
 	import Logout from './pages/Logout.svelte';
 	import Error from './pages/User/Error.svelte';
 	import Signup from './pages/User/Signup.svelte';
+	import VerifyEmail from './pages/User/VerifyEmail.svelte';
 
 	const routes = {
 		'/login': {
-			displayTitle: 'Login',
 			name: 'Login',
 			comp: Login
 		},
 		'/signup': {
-			displayTitle: 'Sign up with IntelliDnD',
 			name: 'Signup',
 			comp: Signup
 		},
@@ -35,15 +34,18 @@
 		'/error': {
 			name: 'Error',
 			comp: Error
+		},
+		'/signup/verify/email': {
+			name: 'Verify',
+			comp: VerifyEmail
 		}
 	};
 
 	export let url = '';
 </script>
 
-<ErrorBox />
+<Notification />
 <Router {url}>
-	<Nav />
 	{#each Object.entries(routes) as [route, props]}
 		<Route path={route}>
 			<Renderer displayTitle={props.displayTitle} comp={props.comp} title={props.name} />

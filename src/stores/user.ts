@@ -12,6 +12,7 @@ interface UserAttributes {
     expiresAt: number;
     characters: Record<string, Character>;
     fetching?: boolean;
+    notification?: string;
 }
 
 class User implements UserAttributes {
@@ -23,6 +24,7 @@ class User implements UserAttributes {
     public expiresAt: number;
     public characters: Record<string, Character>;
     public fetching = false;
+    public notification?: string;
 
     private _blank = {
         id: null,
@@ -225,15 +227,31 @@ class User implements UserAttributes {
                     ...char.inventory.wallet,
                     update: async (coins) => {
 
-                        return await this._request(`/characters/${char.id}/wallet`, 'PATCH', {
+                        for (const c in coins) {
+
+                            char.inventory.wallet[c] = coins[c];
+                        }
+
+                        await this._request(`/characters/${char.id}/wallet`, 'PATCH', {
                             data: coins
                         });
+
+                        await this.getCharacters(char);
+
+                        return char.inventory.wallet;
                     },
                 }
             }
         }));
 
         return characters;
+    }
+
+    private _notify(message: string, type: 'error' | 'warning' | 'success', autoDismiss = true) {
+
+        this.set({
+            notification: `${type}|${autoDismiss}|${message}`
+        });
     }
 
     public async signup(details: {
@@ -284,11 +302,42 @@ class User implements UserAttributes {
         this.set(profile);
     }
 
-    public async getCharacters() {
+    public async getCharacters(updates?: Partial<CharacterStatic>) {
 
-        const chars = await this._request<any[]>('/characters');
+        if (updates) {
 
-        this.set({ characters: getMap(this._initCharacters(chars), 'id') })
+            if (updates.id in this.characters) {
+
+                for (const k in updates) {
+
+                    this.characters[updates.id][k] = updates[k];
+                }
+            }
+        }
+
+        let chars: CharacterStatic[] = Object.values(this.characters || {});
+
+        if (!updates) {
+
+            chars = await this._request<CharacterStatic[]>('/characters')
+        }
+
+        this.set({ characters: getMap(this._initCharacters(chars), 'id') });
+    }
+
+    public async validateEmail(token: string) {
+
+        this.set({ fetching: true });
+
+        try {
+            const res = await request('/user/verify/email', 'PATCH', token);
+            this.set(res);
+        }
+        catch (e) {}
+        finally {
+            this.set({ fetching: false });
+        }
+
     }
 }
 

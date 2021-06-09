@@ -41,7 +41,7 @@
 			Welcome, {$user.name}.
 		</h1>
 		{#each Object.values($user.characters || {}) as character}
-			<div>
+			<div class='character'>
 				<h2>{character.name}</h2>
 				<Form
 					handleSubmit={async (values) => {
@@ -58,3 +58,11 @@
 		<h1>Redirecting you...</h1>
 	{/if}
 </main>
+
+<style lang='scss'>
+	.character {
+		h2 {
+			text-align: center;
+		}
+	}
+</style>

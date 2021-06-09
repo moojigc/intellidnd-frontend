@@ -1,7 +1,8 @@
 <script lang='ts'>
-    import { navigate } from 'svelte-routing';
+    import { Link, navigate } from 'svelte-routing';
     import Button from '../../components/Button.svelte';
     import Form from '../../components/Form.svelte';
+    import Flex from '../../components/Flex.svelte';
     import { user } from '../../stores/user';
 
     const fields = [
@@ -55,6 +56,17 @@
         fields={fields}
         {handleSubmit}
     >
-        <Button type='submit'>Login</Button>
+        <Flex margin='1rem' direction='column'>
+            <Button type='submit'>Continue</Button>
+        </Flex>
     </Form>
+    <small>
+        Don't have an account yet? <Link to='/signup'>Sign up here!</Link>
+    </small>
 </main>
+
+<style>
+    main {
+        max-width: 550px;
+    }
+</style>
