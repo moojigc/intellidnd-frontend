@@ -50,7 +50,7 @@
                     }}
 					fields={fields(character)}
 				>
-					<Button type="submit">Submit</Button>
+					<Button type="submit">Save</Button>
 				</Form>
 			</div>
 		{/each}

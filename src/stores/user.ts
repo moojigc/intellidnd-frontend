@@ -159,11 +159,9 @@ class User implements UserAttributes {
 
             if ('response' in e) {
 
-                if (!e.response || e.response.status === 500) {
-
-                    location.assign('/error');
-                }
-                else if (e.response.status === 401) {
+                if (e.response.status === 401 &&
+                    /auth-03|auth-01/.test(e.response.data.code)
+                ) {
 
                     try {
 
@@ -333,7 +331,18 @@ class User implements UserAttributes {
             const res = await request('/user/verify/email', 'PATCH', token);
             this.set(res);
         }
-        catch (e) {}
+        catch (e) {
+            if (e.response) {
+                switch (e.response.status) {
+                    case 404:
+                        window.location.assign('/signup');
+                        break;
+                    case 403:
+                        window.location.assign('/login');
+                        break;
+                }
+            }
+        }
         finally {
             this.set({ fetching: false });
         }

@@ -7,13 +7,14 @@
 
 <div>
     <nav>
-        <div>
+        <Link to='/'>
             <img src="../assets/images/primary-icon.png" alt="logo">
-        </div>
-        {#if title}
-            <Link style='flex-grow: 0.5' to={window.location.pathname}>{title}</Link>
-        {:else}
-            <Link style='flex-grow: 0.5' to={$user.token ? '/dashboard' : '/'}>Home</Link> 
+        </Link>
+        <Link style='flex-grow: {$user.id ? '20%' : '0.5'}' to={title ? window.location.pathname : '/'}>
+            {title || 'Home'}
+        </Link> 
+        {#if $user.id}
+            <Link style='flex-grow: 0' to='/logout'>Logout</Link> 
         {/if}
     </nav>
     <div class="progress bar {$user.fetching ? 'slide-in' : 'slide-out'}">
