@@ -1,5 +1,8 @@
 <script lang="ts">
     import { onMount } from "svelte";
+    type InputEvent = Event & {
+        currentTarget: EventTarget & HTMLInputElement;
+    };
 	interface Field {
 		name: string;
 		label: string;
@@ -10,13 +13,14 @@
         required?: boolean;
 	}
 
+    export let maxWidth: string | number;
+    export let onInput: (event: InputEvent, values: Record<string, any>) => void = null;
 	export let fields: Field[];
 	export let handleSubmit: (values: any) => void | Promise<void>;
     
     let submittable = true;
 	const values: Record<string, any> = {};
     $: values;
-    $: submittable = fields.filter(f => f.required && !values[f.name]).length === 0;
     
     const _handleSubmit = (_) => {
 
@@ -59,15 +63,15 @@
             }
         });
 
+        submittable = fields.filter(f => (f.required && !values[f.name]) || f.errorMessage).length === 0;
+
         if (submittable) {
 
             handleSubmit(values);
         }
     }
 	const handleInput = (
-		e: Event & {
-			currentTarget: EventTarget & HTMLInputElement;
-		},
+		e: InputEvent,
 		field: Field
 	) => {
 		const target = e.target as EventTarget & {
@@ -83,6 +87,7 @@
                 case 'positive_number':
                 case 'number':
                     value = Number(value.replace(/,/g, ''));
+                    if (isNaN(value)) { return; }
                     target.value = value.toLocaleString();
                     break;
                 default: 
@@ -91,6 +96,11 @@
         }
 
         values[target.name] = value;
+
+        if (onInput) {
+
+            onInput(e, values);
+        }
 	};
 
     const handleValidate = (field: Field) => {
@@ -139,7 +149,7 @@
     })
 </script>
 
-<form on:submit|preventDefault={_handleSubmit}>
+<form on:submit|preventDefault={_handleSubmit} style='max-width: {maxWidth ?? 'initial'};'>
     {#each fields as field}
         <div class='row'>
             <label for={field.name}>{field.label}</label>

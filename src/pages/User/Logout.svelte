@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
     import { navigate } from 'svelte-routing';
-	import user from '../stores/user';
+	import user from '../../stores/user';
 
 	onMount(() => {
 		console.log('WTFFF')

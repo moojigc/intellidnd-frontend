@@ -5,10 +5,11 @@
 	import Dashboard from './pages/User/Dashboard.svelte';
 	import Login from './pages/User/Login.svelte';
 	import Renderer from './components/Renderer.svelte';
-	import Logout from './pages/Logout.svelte';
+	import Logout from './pages/User/Logout.svelte';
 	import Error from './pages/User/Error.svelte';
 	import Signup from './pages/User/Signup.svelte';
 	import VerifyEmail from './pages/User/VerifyEmail.svelte';
+	import InternalServerError from './pages/User/InternalServerError.svelte';
 
 	const routes = {
 		'/login': {
@@ -34,6 +35,10 @@
 		'/error': {
 			name: 'Error',
 			comp: Error
+		},
+		'/error/server': {
+			name: 'Error',
+			comp: InternalServerError
 		},
 		'/signup/verify/email': {
 			name: 'Verify',

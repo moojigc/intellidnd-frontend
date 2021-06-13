@@ -1,9 +1,27 @@
-import axios, { Method, AxiosRequestConfig, AxiosError } from 'axios';
+import Axios, { Method, AxiosRequestConfig } from 'axios';
 import { navigate } from 'svelte-routing'
 
 const BASE_URL = /intellidnd.com/i.test(location.host)
     ? 'https://api.intellidnd.com/v1'
     : 'http://localhost:4000/v1'
+const axios = Axios.create({
+    baseURL: BASE_URL,
+});
+axios.interceptors.response.use(res => res, (err) => {
+
+    if (/Network Error/.test(err.message)) {
+
+        navigate('/error');
+    }
+    else if (err.response?.status === 500) {
+
+        navigate('/error/server');
+    }
+    else {
+
+        return Promise.reject(err);
+    }
+});
 
 export default async function request(
 	target: string,
@@ -13,8 +31,8 @@ export default async function request(
 ) {
     try {
 
-        const { data } = await axios({
-            url: BASE_URL + target,
+        const res = await axios({
+            url: target,
             method: method,
             headers: token
                 ? {
@@ -24,7 +42,8 @@ export default async function request(
             withCredentials: true,
             ...options
         });
-        return data;
+
+        return res?.data;
     }
     catch (e) {
 
@@ -37,8 +56,6 @@ export default async function request(
                     throw e;
             }
         }
-
-        navigate('/error');
         throw e;
     }
 }

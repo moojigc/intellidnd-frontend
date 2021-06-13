@@ -1,5 +1,7 @@
 <script lang="ts">
 	import Nav from './Nav.svelte';
+	import ProgressBar from './ProgressBar.svelte';
+	import SideMenu from './SideMenu.svelte';
 
 	export let displayTitle: string;
 	export let title: string;
@@ -10,15 +12,20 @@
 	}
 </script>
 
-<Nav {title}/>
-{#if displayTitle}
+<Nav {title} />
+<div style="display: flex;">
+	<SideMenu />
+	{#if displayTitle}
 	<h1>{displayTitle}</h1>
-{/if}
-<svelte:component this={comp} />
+	{/if}
+	<div id='app'>
+		<ProgressBar />
+		<svelte:component this={comp} />
+	</div>
+</div>
 
 <style>
-	h1 {
-		margin: 0.5em auto;
-		text-align: center;
+	#app {
+		width: 100%;
 	}
 </style>

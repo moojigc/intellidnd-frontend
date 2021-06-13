@@ -1,0 +1,114 @@
+:root {
+  --default-font: 'Oxygen', sans-serif;
+  --font-size-m: 16px;
+  --font-size-l: 1.5rem;
+  --font-size-s: 0.75rem;
+  --color-text: rgb(12, 11, 11);
+  --color-1: hsl(283, 39%, 53%);
+  --color-2: hsl(222, 53%, 21%);
+  --color-3: hsl(254, 26%, 71%);
+  --color-4: hsl(275, 30%, 83%);
+  --color-5: hsl(352, 43%, 93%);
+  --color-disabled: gray;
+  font-weight: 100;
+  font-family: var(--default-font);
+  letter-spacing: 0.05em;
+  font-size: var(--font-size-m);
+  color: var(--color-text);
+  background-color: var(--color-4);
+}
+
+body {
+  background-image: url("../images/primary-logo.png");
+  background-color: var(--color-4);
+  background-size: cover;
+  background-blend-mode: multiply;
+  height: 100%;
+}
+
+h1 {
+  font-weight: 900;
+}
+
+h2 {
+  font-weight: 300;
+}
+
+.light {
+  background-color: white;
+}
+
+.dark {
+  --color-1: hsl(201, 100%, 50%);
+  --color-2: hsl(190, 84%, 50%);
+  --color-3: hsl(221, 33%, 20%);
+  --color-4: hsl(221, 33%, 10%);
+  --color-5: hsl(325, 18%, 10%);
+  --color-text: rgb(236, 236, 236);
+}
+
+button {
+  font-size: var(--font-size-m);
+  padding: 0.5rem 0.75rem;
+  background-color: var(--color-2);
+  border-width: 1px;
+  border-color: var(--color-2);
+  border-style: solid;
+  border-radius: 0.3rem;
+  -webkit-transition: 250ms;
+  transition: 250ms;
+}
+
+button.large {
+  font-size: 1.5rem;
+  padding: 1rem;
+}
+
+button:hover {
+  opacity: 70%;
+  cursor: pointer;
+}
+
+button:focus {
+  border-width: 1px;
+  border-color: var(--color-3);
+  border-style: solid;
+}
+
+button:disabled {
+  background-color: var(--color-disabled);
+}
+
+button:disabled:hover {
+  opacity: 100%;
+  cursor: initial;
+}
+
+main {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+main h1 {
+  text-align: center;
+}
+
+a:visited {
+  color: inherit;
+  text-decoration: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-1: hsl(201, 100%, 50%);
+    --color-2: hsl(190, 84%, 50%);
+    --color-3: hsl(221, 33%, 20%);
+    --color-4: hsl(221, 33%, 10%);
+    --color-5: hsl(325, 18%, 10%);
+    --color-text: rgb(236, 236, 236);
+  }
+  input {
+    color: var(--color-text) !important;
+  }
+}
+/*# sourceMappingURL=index.min.css.map */

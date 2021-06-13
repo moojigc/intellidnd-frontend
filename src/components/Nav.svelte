@@ -1,64 +1,70 @@
 <script>
-    import { user } from '../stores/user';
-    import { Link } from "svelte-routing";
+	import { user } from '../stores/user';
+	import menu from '../stores/menu';
+	import { Link } from 'svelte-routing';
+	import Text from './Text.svelte';
 
-    export let title = '';
+	const handleOpen = (e) => {
+		console.log(e.target);
+		menu.set(!$menu);
+	};
+
+	export let title = '';
 </script>
 
 <div>
-    <nav>
-        <Link to='/'>
-            <img src="../assets/images/primary-icon.png" alt="logo">
-        </Link>
-        <Link style='flex-grow: {$user.id ? '20%' : '0.5'}' to={title ? window.location.pathname : '/'}>
-            {title || 'Home'}
-        </Link> 
-        {#if $user.id}
-            <Link style='flex-grow: 0' to='/logout'>Logout</Link> 
-        {/if}
-    </nav>
-    <div class="progress bar {$user.fetching ? 'slide-in' : 'slide-out'}">
-        <div class="indeterminate"></div>
-    </div>
+	<nav>
+		<ul>
+            <li>
+                <i
+                    aria-haspopup="menu"
+                    id="menu-trigger"
+                    class="material-icons"
+                    on:click={handleOpen}>menu</i
+                >
+            </li>
+			<li>
+				<Link
+					to="/"
+					style="display: flex; align-items: center; padding: 0;"
+				>
+					<img src="../assets/images/primary-icon.png" alt="logo" />
+				</Link>
+			</li>
+			<li>
+				<Link
+					style="flex-grow: {$user.id ? '20%' : '0.5'}"
+					to={title ? window.location.pathname : '/'}
+				>
+					<Text type="span" variant="t4">{title || 'Home'}</Text>
+				</Link>
+			</li>
+		</ul>
+	</nav>
 </div>
 
-<style lang='scss'>
-    @keyframes slide-in {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
-    @keyframes slide-out {
-        from { opacity: 1; }
-        to { opacity: 0; }
-    }
-    .bar {
-        position: relative;
-
-        margin: 0;
-        &.slide-in {
-            animation: slide-in 500ms;
-        }
-        &.slide-out {
-            animation: slide-out 250ms;
-            opacity: 0;
-        }
-    }
-    nav {
-        img {
-            width: 2rem;
-            height: auto;
-        }
-        & a:visited {
-            color: inherit;
-            text-decoration: none;
-        } 
-        background-color: var(--color-5);
-        color: var(--color-text);
-        font-weight: 500;
-        font-size: larger;
-        padding: 1rem;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
+<style lang="scss">
+	#menu-trigger {
+		font-size: 2.5rem;
+		cursor: pointer;
+	}
+	nav {
+		img {
+			width: 2rem;
+			height: auto;
+		}
+		background-color: var(--color-5);
+		color: var(--color-text);
+		font-weight: 500;
+		font-size: larger;
+		ul {
+			a {
+				font-size: 2rem;
+			}
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 0 1rem;
+		}
+	}
 </style>

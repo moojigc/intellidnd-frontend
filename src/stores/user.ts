@@ -1,6 +1,6 @@
 import type { AxiosError, AxiosRequestConfig, Method } from 'axios';
 import { writable, Writable } from 'svelte/store';
-import type { Character, CharacterStatic } from '../types';
+import type { Character, CharacterStatic, Coins } from '../types';
 import getMap from '../utils/getMap';
 import request from '../utils/request';
 
@@ -13,6 +13,7 @@ interface UserAttributes {
     characters: Record<string, Character>;
     fetching?: boolean;
     notification?: string;
+    inSync: boolean;
 }
 
 class User implements UserAttributes {
@@ -25,6 +26,7 @@ class User implements UserAttributes {
     public characters: Record<string, Character>;
     public fetching = false;
     public notification?: string;
+    public inSync = true;
 
     private _blank = {
         id: null,
@@ -33,7 +35,8 @@ class User implements UserAttributes {
         token: null,
         characters: {},
         expiresAt: null,
-        fetching: false
+        fetching: false,
+        inSync: true
     };
 
     public subscribe: Writable<Partial<UserAttributes>>['subscribe'];
@@ -157,33 +160,24 @@ class User implements UserAttributes {
         }
         catch (e) {
 
-            if ('response' in e) {
+            if (e.response) {
 
                 if (e.response.status === 401 &&
                     /auth-03|auth-01/.test(e.response.data.code)
                 ) {
 
-                    try {
-
-                        await this._getRefreshToken();
-                    }
-                    catch (e) {
-
-                        const errorBox = document.getElementById('error-box');
-                        errorBox.innerText = e.response?.data.message || e.message;
-                        errorBox.hidden = false;
-                        throw e;
-                    }
+                    await this._getRefreshToken();
 
                     return this._request(target, method, options);
                 }
                 else {
-
-                    const errorBox = document.getElementById('error-box');
-                    errorBox.innerText = e.response?.data.message || e.message;
-                    errorBox.hidden = false;
+                    
                     throw e;
                 }
+            }
+            else {
+
+                throw e;
             }
         }
         finally {
@@ -238,6 +232,35 @@ class User implements UserAttributes {
 
                         return char.inventory.wallet;
                     },
+                    getTotalAs: (type?: keyof Coins) => {
+
+                        const {
+                            gold,
+                            copper,
+                            electrum,
+                            platinum,
+                            silver
+                        } = char.inventory.wallet;
+
+                        const asGold = gold + 
+                            (copper / 100) +
+                            (electrum / 2) +
+                            (platinum * 10) +
+                            (silver / 10);
+
+                        switch (type) {
+                            case 'copper':
+                                return asGold * 100;
+                            case 'electrum':
+                                return asGold * 2;
+                            case 'platinum':
+                                return asGold / 10;
+                            case 'silver':
+                                return asGold * 10;
+                            default:
+                                return asGold;
+                        }
+                    }
                 }
             }
         }));
