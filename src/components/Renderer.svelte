@@ -1,7 +1,7 @@
 <script lang="ts">
-	import Nav from './Nav.svelte';
+	import Nav from './Navigation/Nav.svelte';
 	import ProgressBar from './ProgressBar.svelte';
-	import SideMenu from './SideMenu.svelte';
+	import SideMenu from './Navigation/SideMenu.svelte';
 
 	export let displayTitle: string;
 	export let title: string;

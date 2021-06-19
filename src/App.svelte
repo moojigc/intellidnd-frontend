@@ -1,7 +1,6 @@
 <script>
 	import { Router, Link, Route } from 'svelte-routing';
 	import Notification from './components/Notification.svelte';
-	import Nav from './components/Nav.svelte';
 	import Dashboard from './pages/User/Dashboard.svelte';
 	import Login from './pages/User/Login.svelte';
 	import Renderer from './components/Renderer.svelte';
@@ -10,6 +9,7 @@
 	import Signup from './pages/User/Signup.svelte';
 	import VerifyEmail from './pages/User/VerifyEmail.svelte';
 	import InternalServerError from './pages/User/InternalServerError.svelte';
+	import browser from './stores/browser';
 
 	const routes = {
 		'/login': {
@@ -49,11 +49,24 @@
 	export let url = '';
 </script>
 
+<svelte:window
+	on:resize={() => {
+		browser.set({
+			width: window.innerWidth,
+			height: window.innerHeight
+		});
+	}}
+/>
+
 <Notification />
 <Router {url}>
 	{#each Object.entries(routes) as [route, props]}
 		<Route path={route}>
-			<Renderer displayTitle={props.displayTitle} comp={props.comp} title={props.name} />
+			<Renderer
+				displayTitle={props.displayTitle}
+				comp={props.comp}
+				title={props.name}
+			/>
 		</Route>
 	{/each}
 </Router>

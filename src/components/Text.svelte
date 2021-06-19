@@ -2,40 +2,41 @@
 	export let type: 'span' | 'p' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'small' = 'p';
     export let variant: 't1' | 't2' | 't3' | 't4' | 't5' | 't6' = 't5';
 	export let bold = false;
+	export let style: svelte.JSX.HTMLAttributes<any>['style'] = ''; 
 
 	$: className = variant + (bold ? ' bold' : '');
 </script>
 
 {#if type === 'span'}
-	<span class={className}>
+	<span {style} class={className}>
 		<slot />
 	</span>
 {:else if type === 'h1'}
-	<h1 class={className}>
+	<h1 {style} class={className}>
 		<slot />
 	</h1>
 {:else if type === 'h2'}
-	<h2 class={className}>
+	<h2 {style} class={className}>
 		<slot />
 	</h2>
 {:else if type === 'h3'}
-	<h3 class={className}>
+	<h3 {style} class={className}>
 		<slot />
 	</h3>
 {:else if type === 'h4'}
-	<h4 class={className}>
+	<h4 {style} class={className}>
 		<slot />
 	</h4>
 {:else if type === 'h5'}
-	<h5 class={className}>
+	<h5 {style} class={className}>
 		<slot />
 	</h5>
 {:else if type === 'p'}
-	<p class={className}>
+	<p {style} class={className}>
 		<slot />
 	</p>
 {:else if type === 'small'}
-	<small class={className}>
+	<small {style} class={className}>
 		<slot />
 	</small>
 {/if}

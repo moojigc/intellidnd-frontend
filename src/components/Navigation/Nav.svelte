@@ -1,11 +1,10 @@
 <script>
-	import { user } from '../stores/user';
-	import menu from '../stores/menu';
 	import { Link } from 'svelte-routing';
-	import Text from './Text.svelte';
+
+	import { user } from '../../stores/user';
+	import menu from '../../stores/menu';
 
 	const handleOpen = (e) => {
-		console.log(e.target);
 		menu.set(!$menu);
 	};
 
@@ -15,14 +14,14 @@
 <div>
 	<nav>
 		<ul>
-            <li>
-                <i
-                    aria-haspopup="menu"
-                    id="menu-trigger"
-                    class="material-icons"
-                    on:click={handleOpen}>menu</i
-                >
-            </li>
+			<li>
+				<i
+					aria-haspopup="menu"
+					id="menu-trigger"
+					class="material-icons"
+					on:click={handleOpen}>menu</i
+				>
+			</li>
 			<li>
 				<Link
 					to="/"
@@ -31,12 +30,13 @@
 					<img src="../assets/images/primary-icon.png" alt="logo" />
 				</Link>
 			</li>
-			<li>
+			<li id="page-title">
 				<Link
-					style="flex-grow: {$user.id ? '20%' : '0.5'}"
+					style="flex-grow: {$user.id
+						? '20%'
+						: '0.5'}; font-size: 1.5rem;"
 					to={title ? window.location.pathname : '/'}
-				>
-					<Text type="span" variant="t4">{title || 'Home'}</Text>
+					>{title || 'Home'}
 				</Link>
 			</li>
 		</ul>
@@ -58,13 +58,16 @@
 		font-weight: 500;
 		font-size: larger;
 		ul {
-			a {
-				font-size: 2rem;
-			}
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
 			padding: 0 1rem;
+		}
+	}
+
+	@media screen and (max-width: 800px) {
+		#page-title {
+			display: none;
 		}
 	}
 </style>

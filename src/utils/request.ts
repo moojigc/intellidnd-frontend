@@ -7,11 +7,35 @@ const BASE_URL = /intellidnd.com/i.test(location.host)
 const axios = Axios.create({
     baseURL: BASE_URL,
 });
-axios.interceptors.response.use(res => res, (err) => {
+
+const sleep = () => new Promise((resolve, _) => setTimeout(resolve, 30000));
+const _ping = async () => {
+
+    let ok = false;
+    let reattempts = 0;
+
+    while (!ok && reattempts <= 5) {
+
+        const res = await fetch('/ping');
+        if (res.status >= 200 && res.status < 300) {
+
+            ok = true;
+        }
+        else {
+
+            reattempts ++;
+            console.log(reattempts)
+            await sleep();
+        }
+    }
+}
+
+axios.interceptors.response.use(null, (err) => {
 
     if (/Network Error/.test(err.message)) {
 
         navigate('/error');
+        _ping();
     }
     else if (err.response?.status === 500) {
 

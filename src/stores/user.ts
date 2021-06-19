@@ -187,6 +187,68 @@ class User implements UserAttributes {
 
     private _initCharacters(chars: CharacterStatic[]) {
 
+        if (!chars.length) {
+
+            // @ts-ignore
+            return [
+                {
+                    id: null,
+                    race: null,
+                    userId: this.id,
+                    armorClass: 0,
+                    charisma: 0,
+                    constitution: 0,
+                    dexterity: 0,
+                    experience: 0,
+                    hp: 0,
+                    initiative: 0,
+                    intelligence: 0,
+                    level: 0,
+                    maxHp: 0,
+                    strength: 0,
+                    wisdom: 0,
+                    modifiedAt: null,
+                    createdAt: null,
+                    name: 'Character name',
+                    update: async (options) => {
+
+                        const res = await this._request(`/characters`, 'POST', {
+                            data: options
+                        });
+        
+                        return res;
+                    },
+                    inventory: {
+                        id: null,
+                        characterId: null,
+                        wallet: {
+                            copper: 0,
+                            silver: 0,
+                            gold: 0,
+                            electrum: 0,
+                            platinum: 0,
+                            update: async (coins) => {
+                                
+                                const char = await this._request<Character>(`/characters`, 'POST', {
+                                    data: {
+                                        name: 'Character name'
+                                    }
+                                });
+
+                                await this.getCharacters(char);
+
+                                await this._request(`/characters/${char.id}/wallet`, 'PATCH', {
+                                    data: coins
+                                });
+
+                                return coins;
+                            },
+                        }
+                    }
+                }
+            ] as Character[];
+        }
+
         const characters: Character[] = chars.map(char => ({
             ...char,
             update: async (options) => {
@@ -196,6 +258,10 @@ class User implements UserAttributes {
                 });
 
                 return res;
+            },
+            delete: async () => {
+
+                await this._request(`/characters/${char.id}`, 'DELETE');
             },
             inventory: {
                 ...char.inventory,

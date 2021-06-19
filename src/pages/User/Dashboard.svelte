@@ -6,6 +6,7 @@
 	import user from '../../stores/user';
 	import { writable } from 'svelte/store';
 import Flex from '../../components/Flex.svelte';
+import Icon from '../../components/Icon.svelte';
 
 	const status = writable<{
 		wallet: 'changed' | 'saved' | 'loaded'
@@ -103,5 +104,6 @@ import Flex from '../../components/Flex.svelte';
 		h2 {
 			text-align: center;
 		}
+		margin-bottom: 2rem;
 	}
 </style>

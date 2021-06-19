@@ -12,6 +12,8 @@
 	--color-4: hsl(275, 30%, 83%);
 	--color-5: hsl(352, 43%, 93%);
 	--color-disabled: gray;
+	--color-red: hsl(0, 100%, 62%);
+	--color-green: hsl(133, 83%, 44%);
 
 	font-weight: 100;
 	font-family: var(--default-font);
@@ -20,13 +22,31 @@
 	color: var(--color-text);
 	background-color: var(--color-4);
 }
-
+a {
+	color: var(--color-1);
+	&:visited {
+		text-decoration: none;
+	}
+}
+html {
+	height: 100vh;
+}
 body {
-	background-image: url('../images/primary-logo.png');
-	background-color: var(--color-4);
-	background-size: cover;
-	background-blend-mode: multiply;
-	height: 100%;
+	&::before {
+		content: '';
+		position: absolute;
+		top: 0px;
+		right: 0px;
+		bottom: 0px;
+		left: 0px;
+		background-image: url('../images/primary-logo.png');
+		background-color: var(--color-4);
+		background-size: cover;
+		background-blend-mode: multiply;
+		z-index: -1;
+		opacity: 10%;
+	}
+	height: 100vh;
 }
 
 h1 {
@@ -82,14 +102,10 @@ button {
 main {
 	max-width: 680px;
 	margin: 0 auto;
+	padding: 0 1rem;
 	h1 {
 		text-align: center;
 	}
-}
-
-a:visited {
-	color: inherit;
-	text-decoration: none;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -103,5 +119,13 @@ a:visited {
 	}
 	input {
 		color: var(--color-text) !important;
+	}
+	body::before {
+		opacity: 50%;
+	}
+	main {
+		h1 {
+			font-size: 2rem;
+		}
 	}
 }

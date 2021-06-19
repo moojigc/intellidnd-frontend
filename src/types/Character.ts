@@ -27,6 +27,7 @@ export interface CharacterStatic {
 
 export interface Character extends CharacterStatic {
     update: (values: Partial<Character>) => Promise<CharacterStatic>;
+	delete: () => Promise<void>;
 }
 
 
