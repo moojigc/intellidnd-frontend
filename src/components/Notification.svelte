@@ -1,58 +1,47 @@
 <script lang="ts">
 	import user from '../stores/user';
 
-	let type: string;
-	let message: string;
-
-	if ($user.notification) {
-
-		const [t, dismiss, m] = $user.notification.split('|');
-
-		console.log(t, dismiss, m)
-
-		type = t;
-		message = m;
-
-		if (dismiss === 'true') {
-
-			setTimeout(() => {
-	
-				user.set({ notification: null });
-			}, 5000);
-		}
-	}
+	$: type = $user.notification?.split('|')[0];
+	$: message = $user.notification?.split('|')[1];
 
 	const onClick = () => {
 		user.set({ notification: null });
 	};
 </script>
 
-<div
-	hidden={!$user.notification}
-	on:click={onClick}
-	id="notification"
-	class={type || 'error'}
->
-	{message || ''}
+<div id="notif-wrapper" hidden={!$user.notification} on:click={onClick}>
+	<div id="notification" on:click={onClick} class={type || 'error'}>
+		{message || ''}
+	</div>
 </div>
 
 <style lang="scss">
-	#notification {
+	#notif-wrapper {
 		position: absolute;
+		bottom: 1vh;
+		z-index: 5;
+		width: 100%;
+		padding: 0 0.5rem;
+
+	}
+	#notification {
+		margin: 0 auto;
 		padding: 1em;
-		left: calc(50% - 3em);
-		top: 1vh;
 		color: white;
 		font-size: 1em;
 		font-weight: 500;
-		border-radius: 5%;
+		border-radius: 3px;
 		cursor: pointer;
+		color: black;
+		min-width: min-content;
+		max-width: max-content;
+		text-align: center;
 	}
 	.error {
 		background-color: red;
 	}
 	.success {
-		background-color: greenyellow;
+		background-color: rgba(0, 255, 21, 0.815);
 	}
 	.warning {
 		background-color: yellow;

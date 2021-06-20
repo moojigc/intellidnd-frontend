@@ -43,16 +43,14 @@
     $: fields;
 
     async function handleSubmit(values) {
-
+        
         user.signup(values)
-            .then(() => {
-
+        .then(() => {
                 navigate('/login');
+                user.notify('Thank you for signing up! An email will be sent to ' + values.email + ' shortly.', 'success');
             })
             .catch(e => {
-
                 if (e.response?.status === 403) {
-
                     fields[0].errorMessage = 'That email\'s taken!';
                 }
             });
@@ -62,6 +60,7 @@
 
 <main>
     <Form 
+        maxWidth='500px'
         fields={fields}
         {handleSubmit}
     >

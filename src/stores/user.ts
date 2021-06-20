@@ -334,11 +334,21 @@ class User implements UserAttributes {
         return characters;
     }
 
-    private _notify(message: string, type: 'error' | 'warning' | 'success', autoDismiss = true) {
+    public notify(message: string, type: 'error' | 'warning' | 'success', autoDismiss = true) {
 
         this.set({
-            notification: `${type}|${autoDismiss}|${message}`
+            notification: `${type}|${message}`
         });
+
+        if (autoDismiss) {
+
+            setTimeout(() => {
+
+                this.set({
+                    notification: null
+                });
+            }, 5000);
+        }
     }
 
     public async signup(details: {

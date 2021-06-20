@@ -5,8 +5,7 @@
 	import Form from '../../components/Form.svelte';
 	import user from '../../stores/user';
 	import { writable } from 'svelte/store';
-import Flex from '../../components/Flex.svelte';
-import Icon from '../../components/Icon.svelte';
+	import Flex from '../../components/Flex.svelte';
 
 	const status = writable<{
 		wallet: 'changed' | 'saved' | 'loaded'
