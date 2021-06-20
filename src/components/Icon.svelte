@@ -35,11 +35,11 @@
 		</div>
 		{#if $$slots.default}
 			{#if expanded}
-				<Text type='span' bold variant="t4" style='text-align: center; width: 100%;'>
+				<Text type='span' variant="t4" style='text-align: center; width: 100%; font-weight: 400;'>
 					<slot />
 				</Text>
 			{:else}
-				<Text type='span' variant="t6" style='text-align: center;'>
+				<Text type='span' variant="t6" style='text-align: center; font-weight: 400;'>
 					<slot />
 				</Text>
 			{/if}

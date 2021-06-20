@@ -4,8 +4,7 @@
 	import user from '../../stores/user';
 	import browser from '../../stores/browser';
 
-	// @ts-ignore
-	$: size = ($menu ? 'medium' : 'small') as const;
+	const size = 'small';
 
 	function changeMode() {
 
