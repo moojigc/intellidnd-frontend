@@ -9,12 +9,12 @@
 	};
 </script>
 
-<div id="notif-wrapper" hidden={!$user.notification} on:click={onClick}>
+<div id="notif-wrapper" hidden={!$user.notification}>
 	<div id="notification" on:click={onClick} class={type || 'error'}>
-		<div>
+		<div style="margin: auto 0;">
 			{message || ''}
 		</div>
-		<button>
+		<button on:click={onClick}>
 			Dismiss
 		</button>
 	</div>
@@ -55,7 +55,8 @@
 		box-shadow: var(--fancy-box-shadow);
 	}
 	.error {
-		background-color: red;
+		background-color: rgb(168, 0, 0);
+		color: white !important;
 	}
 	.success {
 		background-color: var(--color-2);

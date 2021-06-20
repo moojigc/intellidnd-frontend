@@ -176,7 +176,8 @@
         margin: 1rem auto 0;
     }
     .form-error {
-        color: rgb(255, 104, 104);
-        font-size: 0.75em;
+        color: var(--color-red);
+        font-size: 0.9em;
+        font-weight: 400;
     }
 </style>

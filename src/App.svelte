@@ -17,16 +17,14 @@
 		document.documentElement.className = $browser.mode;
 	});
 
-	if ('serviceWorker' in navigator) {
-		navigator.serviceWorker.register('serviceWorker.js');
-	}
-
 	const routes = {
 		'/login': {
+			displayTitle: 'Login!',
 			name: 'Login',
 			comp: Login
 		},
 		'/signup': {
+			displayTitle: 'Sign up!',
 			name: 'Signup',
 			comp: Signup
 		},

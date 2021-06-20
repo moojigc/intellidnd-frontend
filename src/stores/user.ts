@@ -123,6 +123,7 @@ class User implements UserAttributes {
             if (e.response?.status === 401) {
 
                 location.replace('/login');
+                this.notify('Please login to continue.', 'error');
             }
         }
     }

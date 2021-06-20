@@ -15,17 +15,20 @@
 <Nav {title} />
 <div style="display: flex;">
 	<SideMenu />
-	{#if displayTitle}
-	<h1>{displayTitle}</h1>
-	{/if}
 	<div id='app'>
 		<ProgressBar />
+		{#if displayTitle}
+			<h1>{displayTitle}</h1>
+		{/if}
 		<svelte:component this={comp} />
 	</div>
 </div>
 
-<style>
+<style lang='scss'>
 	#app {
+		h1 {
+			text-align: center;
+		}
 		width: 100%;
 	}
 </style>
