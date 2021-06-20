@@ -14,12 +14,12 @@
 	--color-disabled: gray;
 	--color-red: hsl(0, 100%, 62%);
 	--color-green: hsl(133, 83%, 44%);
+	--color-label: rgb(12, 11, 11);
 
 	font-weight: 100;
 	font-family: var(--default-font);
 	letter-spacing: 0.05em;
 	font-size: var(--font-size-m);
-	color: var(--color-text);
 	background-color: var(--color-4);
 }
 a {
@@ -32,6 +32,11 @@ html {
 	height: 100vh;
 }
 body {
+	&.dark {
+		&::before {
+			opacity: 80%;
+		}
+	}
 	&::before {
 		content: '';
 		position: absolute;
@@ -47,6 +52,7 @@ body {
 		opacity: 10%;
 	}
 	height: 100vh;
+	color: var(--color-text);
 }
 
 h1 {
@@ -56,9 +62,6 @@ h2 {
 	font-weight: 300;
 }
 
-.light {
-	background-color: white;
-}
 .dark {
 	--color-1: hsl(201, 100%, 50%);
 	--color-2: hsl(190, 84%, 50%);
@@ -105,27 +108,35 @@ main {
 	padding: 0 1rem;
 	h1 {
 		text-align: center;
+		font-size: 2rem;
 	}
 }
 
-@media (prefers-color-scheme: dark) {
-	:root {
-		--color-1: hsl(201, 100%, 50%);
-		--color-2: hsl(190, 84%, 50%);
-		--color-3: hsl(221, 33%, 20%);
-		--color-4: hsl(221, 33%, 10%);
-		--color-5: hsl(325, 18%, 10%);
-		--color-text: rgb(236, 236, 236);
+label {
+	font-weight: 500;
+	color: var(--color-text);
+}
+
+.dark {
+	--color-1: hsl(266, 100%, 68%);
+	--color-2: hsl(190, 84%, 50%);
+	--color-3: hsl(221, 33%, 20%);
+	--color-4: hsl(221, 33%, 10%);
+	--color-5: hsl(325, 18%, 10%);
+	--color-text: rgb(236, 236, 236);
+	--color-label: rgb(180, 180, 180);
+	label {
+		color: var(--color-label);
 	}
 	input {
-		color: var(--color-text) !important;
+		color: var(--color-text);
 	}
-	body::before {
-		opacity: 50%;
-	}
-	main {
-		h1 {
-			font-size: 2rem;
+}
+
+nav {
+	ul {
+		a {
+			color: var(--color-text);
 		}
 	}
 }

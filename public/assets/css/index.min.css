@@ -12,11 +12,11 @@
   --color-disabled: gray;
   --color-red: hsl(0, 100%, 62%);
   --color-green: hsl(133, 83%, 44%);
+  --color-label: rgb(12, 11, 11);
   font-weight: 100;
   font-family: var(--default-font);
   letter-spacing: 0.05em;
   font-size: var(--font-size-m);
-  color: var(--color-text);
   background-color: var(--color-4);
 }
 
@@ -34,6 +34,11 @@ html {
 
 body {
   height: 100vh;
+  color: var(--color-text);
+}
+
+body.dark::before {
+  opacity: 80%;
 }
 
 body::before {
@@ -57,10 +62,6 @@ h1 {
 
 h2 {
   font-weight: 300;
-}
-
-.light {
-  background-color: white;
 }
 
 .dark {
@@ -117,25 +118,33 @@ main {
 
 main h1 {
   text-align: center;
+  font-size: 2rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-1: hsl(201, 100%, 50%);
-    --color-2: hsl(190, 84%, 50%);
-    --color-3: hsl(221, 33%, 20%);
-    --color-4: hsl(221, 33%, 10%);
-    --color-5: hsl(325, 18%, 10%);
-    --color-text: rgb(236, 236, 236);
-  }
-  input {
-    color: var(--color-text) !important;
-  }
-  body::before {
-    opacity: 50%;
-  }
-  main h1 {
-    font-size: 2rem;
-  }
+label {
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.dark {
+  --color-1: hsl(266, 100%, 68%);
+  --color-2: hsl(190, 84%, 50%);
+  --color-3: hsl(221, 33%, 20%);
+  --color-4: hsl(221, 33%, 10%);
+  --color-5: hsl(325, 18%, 10%);
+  --color-text: rgb(236, 236, 236);
+  --color-label: rgb(180, 180, 180);
+}
+
+.dark label {
+  color: var(--color-label);
+}
+
+.dark input {
+  color: var(--color-text);
+}
+
+nav ul a {
+  color: var(--color-text);
 }
 /*# sourceMappingURL=index.min.css.map */

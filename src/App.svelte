@@ -11,6 +11,12 @@
 	import InternalServerError from './pages/User/InternalServerError.svelte';
 	import browser from './stores/browser';
 
+	document.body.className = $browser.mode;
+
+	window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+		document.body.className = $browser.mode;
+	});
+
 	const routes = {
 		'/login': {
 			name: 'Login',
@@ -50,6 +56,7 @@
 </script>
 
 <svelte:window
+	on:pre
 	on:resize={() => {
 		browser.set({
 			width: window.innerWidth,

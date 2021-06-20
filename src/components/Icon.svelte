@@ -4,7 +4,7 @@
 
 	export let icon: string;
 	export let size: 'tiny' | 'small' | 'medium' | 'large' = 'medium';
-	export let hideText = false;
+	export let expanded = false;
 	export let color: string = '';
 	export let handleClick: (event: any) => void = null;
 	export let to = '';
@@ -24,25 +24,32 @@
 </script>
 
 <li>
-	<Clicker onClick={handleClick || to}>
+	<Clicker style='flex-direction: {expanded ? 'row' : 'column'};' onClick={handleClick || to}>
 		<div style="height: {dimensions[size]}; width: {dimensions[size]} ">
 			<i
 				class="material-icons"
-				style="font-size: {fontSize[size]}; {color
-					? 'color: ' + color
-					: ''};">{icon}</i
+				style="font-size: {fontSize[size]}; color: {color
+					? color
+					: 'var(--color-1)'};">{icon}</i
 			>
 		</div>
-		{#if !hideText && $$slots.default}
-			<Text bold variant="t4" style='margin-left: 1rem'>
-				<slot />
-			</Text>
+		{#if $$slots.default}
+			{#if expanded}
+				<Text type='span' bold variant="t4" style='text-align: center; width: 100%;'>
+					<slot />
+				</Text>
+			{:else}
+				<Text type='span' variant="t6" style='text-align: center;'>
+					<slot />
+				</Text>
+			{/if}
 		{/if}
 	</Clicker>
 </li>
 
 <style lang="scss">
 	li {
+		padding: 0.5rem;
 		list-style: none;
 		cursor: pointer;
 		&:hover {

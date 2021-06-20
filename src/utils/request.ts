@@ -5,7 +5,8 @@ const BASE_URL = /intellidnd.com/i.test(location.host)
     ? 'https://api.intellidnd.com/v1'
     : 'http://localhost:4000/v1'
 const axios = Axios.create({
-    baseURL: BASE_URL,
+    // @ts-ignore
+    baseURL: window.API_URL || BASE_URL,
 });
 
 const sleep = () => new Promise((resolve, _) => setTimeout(resolve, 30000));
