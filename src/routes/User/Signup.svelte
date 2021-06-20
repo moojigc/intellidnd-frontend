@@ -45,9 +45,11 @@
     async function handleSubmit(values) {
         
         user.signup(values)
-        .then(() => {
+            .then(() => {
                 navigate('/login');
-                user.notify('Thank you for signing up! An email will be sent to ' + values.email + ' shortly.', 'success');
+                user.notify(
+                    'Thank you for signing up! An email will be sent to ' + values.email + ' shortly.', 'success', false
+                );
             })
             .catch(e => {
                 if (e.response?.status === 403) {

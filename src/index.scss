@@ -16,6 +16,8 @@
 	--color-green: hsl(133, 83%, 44%);
 	--color-label: rgb(12, 11, 11);
 
+	--fancy-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+
 	font-weight: 100;
 	font-family: var(--default-font);
 	letter-spacing: 0.05em;
@@ -29,9 +31,7 @@ a {
 	}
 }
 html {
-	height: 100vh;
-}
-body {
+	min-height: 100%;
 	&.dark {
 		&::before {
 			opacity: 80%;
@@ -40,21 +40,24 @@ body {
 	&::before {
 		content: '';
 		position: absolute;
-		top: 0px;
+		top: 4rem;
 		right: 0px;
 		bottom: 0px;
 		left: 0px;
-		background-image: url('../images/primary-logo.png');
+		min-height: 100%;
+		overflow-y: hidden;
+		background: url('../images/primary-logo.png') no-repeat center center fixed;
 		background-color: var(--color-4);
 		background-size: cover;
 		background-blend-mode: multiply;
 		z-index: -1;
 		opacity: 10%;
 	}
-	height: 100vh;
+}
+body {
+	min-height: 100%;
 	color: var(--color-text);
 }
-
 h1 {
 	font-weight: 900;
 }

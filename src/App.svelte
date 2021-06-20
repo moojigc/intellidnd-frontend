@@ -1,21 +1,25 @@
 <script>
 	import { Router, Link, Route } from 'svelte-routing';
 	import Notification from './components/Notification.svelte';
-	import Dashboard from './pages/User/Dashboard.svelte';
-	import Login from './pages/User/Login.svelte';
+	import Dashboard from './routes/User/Dashboard.svelte';
+	import Login from './routes/User/Login.svelte';
 	import Renderer from './components/Renderer.svelte';
-	import Logout from './pages/User/Logout.svelte';
-	import Error from './pages/User/Error.svelte';
-	import Signup from './pages/User/Signup.svelte';
-	import VerifyEmail from './pages/User/VerifyEmail.svelte';
-	import InternalServerError from './pages/User/InternalServerError.svelte';
+	import Logout from './routes/User/Logout.svelte';
+	import Error from './routes/User/Error.svelte';
+	import Signup from './routes/User/Signup.svelte';
+	import VerifyEmail from './routes/User/VerifyEmail.svelte';
+	import InternalServerError from './routes/User/InternalServerError.svelte';
 	import browser from './stores/browser';
 
-	document.body.className = $browser.mode;
+	document.documentElement.className = $browser.mode;
 
 	window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-		document.body.className = $browser.mode;
+		document.documentElement.className = $browser.mode;
 	});
+
+	if ('serviceWorker' in navigator) {
+		navigator.serviceWorker.register('serviceWorker.js');
+	}
 
 	const routes = {
 		'/login': {

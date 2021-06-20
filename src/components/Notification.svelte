@@ -11,7 +11,12 @@
 
 <div id="notif-wrapper" hidden={!$user.notification} on:click={onClick}>
 	<div id="notification" on:click={onClick} class={type || 'error'}>
-		{message || ''}
+		<div>
+			{message || ''}
+		</div>
+		<button>
+			Dismiss
+		</button>
 	</div>
 </div>
 
@@ -25,6 +30,15 @@
 
 	}
 	#notification {
+		button {
+			background-color: var(--color-5);
+			color: white;
+			border-color: var(--color-5);
+			box-shadow: var(--fancy-box-shadow);
+			font-size: 0.75em;
+			padding: 0.5em 0.6em;
+			margin-left: 0.5em;
+		}
 		margin: 0 auto;
 		padding: 1em;
 		color: white;
@@ -36,14 +50,25 @@
 		min-width: min-content;
 		max-width: max-content;
 		text-align: center;
+		display: flex;
+		flex-direction: row;
+		box-shadow: var(--fancy-box-shadow);
 	}
 	.error {
 		background-color: red;
 	}
 	.success {
-		background-color: rgba(0, 255, 21, 0.815);
+		background-color: var(--color-2);
 	}
 	.warning {
 		background-color: yellow;
+	}
+
+	@media screen and (max-width: 800px) {
+		#notification {
+			button {
+				margin-left: 0;
+			}
+		}
 	}
 </style>
