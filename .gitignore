@@ -1,4 +1,5 @@
 node_modules
 public/build
+public/assets/css/index.min.css
 public/assets/css/index.min.css.map
 .vscode

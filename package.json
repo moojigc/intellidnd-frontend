@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "rollup -c",
+    "build:sass": "sass src/index.scss public/assets/css/index.min.css -s compressed",
+    "build": "rollup -c && npm run build:sass",
     "dev": "rollup -c -w",
     "start": "sirv public -s",
     "validate": "svelte-check"
