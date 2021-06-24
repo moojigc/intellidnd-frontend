@@ -1,9 +1,10 @@
 import type { AxiosError, AxiosRequestConfig, Method } from 'axios';
+import { navigate } from 'svelte-routing';
 import { writable, Writable } from 'svelte/store';
 import type { Character, CharacterStatic, Coins } from '../types';
 import getMap from '../utils/getMap';
 import request from '../utils/request';
-
+type Mode = 'dark' | 'light';
 interface UserAttributes {
     id: string;
     email: string;
@@ -14,6 +15,7 @@ interface UserAttributes {
     fetching?: boolean;
     notification?: string;
     inSync: boolean;
+    mode: Mode;
 }
 
 class User implements UserAttributes {
@@ -27,6 +29,7 @@ class User implements UserAttributes {
     public fetching = false;
     public notification?: string;
     public inSync = true;
+    public mode: Mode = 'dark';
 
     private _blank = {
         id: null,
@@ -36,7 +39,8 @@ class User implements UserAttributes {
         characters: {},
         expiresAt: null,
         fetching: false,
-        inSync: true
+        inSync: true,
+        mode: window.matchMedia('(prefers-color-scheme: dark)') ? 'dark' : 'light' as Mode
     };
 
     public subscribe: Writable<Partial<UserAttributes>>['subscribe'];
@@ -107,7 +111,7 @@ class User implements UserAttributes {
         localStorage.setItem('user', JSON.stringify(ls));
     }
 
-    private async _getRefreshToken() {
+    private async _getRefreshToken(throwError = false) {
 
         try {
                     
@@ -117,14 +121,19 @@ class User implements UserAttributes {
                 token: data.token,
                 expiresAt: data.expiresAt
             });
+
+            return true;
         }
         catch (e) {
 
             if (e.response?.status === 401) {
 
-                location.replace('/login');
-                this.notify('Please login to continue.', 'error');
+                this.notify('Please login to continue.', 'error', true);
+                navigate('/login');
             }
+
+            if (throwError) { throw e }
+            else { return false }
         }
     }
 
@@ -138,6 +147,23 @@ class User implements UserAttributes {
         }
         catch (e) {
 
+            if (e.response.status == 429) {
+
+                const reset = e.response.headers['x-ratelimit-reset'];
+                const inMinutes = (reset - Math.floor(Date.now() / 1000)) / 60;
+                switch (target) {
+                    case '/user/login':
+                        const id = options.data?.identifier;
+                        this.notify(
+                            `Login attempts exceeded. <a id="notif-link" href="/recover?id=${id}">Click here to reset password</a>.`,
+                            'error',
+                            false
+                        );
+                        break;
+                    default:
+                        this.notify(`You are doing that too many times! Please try again in ${inMinutes} minutes.`, 'error');
+                }
+            }
             throw e;
         }
         finally {
@@ -149,7 +175,7 @@ class User implements UserAttributes {
     private async _request<T = any>(target: string, method?: Method, options?: AxiosRequestConfig): Promise<T> {
 
         this.set({ fetching: true });
-        
+
         try {
 
             if (!this.token || this.expiresAt <= Date.now()) {
@@ -164,12 +190,21 @@ class User implements UserAttributes {
             if (e.response) {
 
                 if (e.response.status === 401 &&
-                    /auth-03|auth-01/.test(e.response.data.code)
+                    ['auth-03', 'auth-01'].includes(e.response.data.code)
                 ) {
 
-                    await this._getRefreshToken();
+                    const auth = await this._getRefreshToken(false);
 
-                    return this._request(target, method, options);
+                    if (auth) {
+
+                        return this._request(target, method, options);
+                    }
+                }
+                else if (e.response.status == 429) {
+                    
+                    const reset = e.response.headers['x-ratelimit-reset'];
+                    const inMinutes = (reset - Math.floor(Date.now() / 1000)) / 60;
+                    this.notify(`You are doing that too many times! Please try again in ${inMinutes} minutes.`, 'error');
                 }
                 else {
                     
@@ -344,7 +379,7 @@ class User implements UserAttributes {
         if (autoDismiss) {
 
             setTimeout(() => {
-
+                console.log('dismissed')
                 this.set({
                     notification: null
                 });
@@ -420,7 +455,7 @@ class User implements UserAttributes {
             chars = await this._request<CharacterStatic[]>('/characters')
         }
 
-        this.set({ characters: getMap(this._initCharacters(chars), 'id') });
+        chars && this.set({ characters: getMap(this._initCharacters(chars), 'id') });
     }
 
     public async validateEmail(token: string) {

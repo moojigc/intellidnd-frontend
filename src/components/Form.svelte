@@ -1,19 +1,20 @@
 <script lang="ts">
     import { onMount } from "svelte";
+import App from "../App.svelte";
     type InputEvent = Event & {
         currentTarget: EventTarget & HTMLInputElement;
     };
 	interface Field {
 		name: string;
 		label: string;
-		type?: 'text' | 'number' | 'positive_number' | 'date' | 'password' | 'email';
-		validate?: (e: string | number, values: any) => { ok: boolean; message?: string; };
+		type?: 'text' | 'number' | 'positive_number' | 'date' | 'password' | 'email' | 'phone';
+		validate?: (e: string, values: any) => { ok: boolean; message?: string; };
         errorMessage?: string;
         defaultValue?: string;
         required?: boolean;
 	}
 
-    export let maxWidth: string | number;
+    export let maxWidth: string | number = 500;
     export let onInput: (event: InputEvent, values: Record<string, any>) => void = null;
 	export let fields: Field[];
 	export let handleSubmit: (values: any) => void | Promise<void>;
@@ -26,7 +27,10 @@
 
         fields.forEach((f, i) => {
 
-            if (f.validate) {
+            f.errorMessage = null;
+            fields[i] = f;
+
+            if (f.validate && values[f.name]) {
 
                 const { ok, message } = f.validate(values[f.name], values);
 
@@ -90,6 +94,28 @@
                     if (isNaN(value)) { return; }
                     target.value = value.toLocaleString();
                     break;
+                case 'phone':
+                    value = value.split('').filter(v => /\d/.test(v)).join('');
+                    console.log(value);
+                    let formatted = '';
+                    for (let i=0; i < value.length; i++) {
+
+                        switch (i) {
+                            case 0:
+                                formatted += '(' + value[0];
+                                break;
+                            case 2:
+                                formatted +=  value[2] + ') ';
+                                break;
+                            case 6:
+                                formatted += '-' + value[6];
+                                break;
+                            default:
+                                formatted += value[i];
+                                break;
+                        }
+                    }
+                    target.value = formatted;
                 default: 
                     break;
             }
@@ -105,7 +131,7 @@
 
     const handleValidate = (field: Field) => {
 
-        if (field.validate) {
+        if (field.validate && values[field.name]) {
 
             let ok = false;
             let errorMsg = null;
@@ -135,6 +161,17 @@
         fields[fields.indexOf(field)] = field;
     }
 
+    const getType = (t: Field['type']) => {
+        switch (t) {
+            case 'number':
+            case 'positive_number':
+            case 'phone':
+                return 'text';
+            default:
+                return t;
+        }
+    };
+
     onMount(() => {
 
         fields.forEach(f => {
@@ -143,8 +180,9 @@
             const formatted = /number|integer/.test(f.type)
                 ? Number(values[f.name] ?? 0).toLocaleString()
                 : values[f.name]; 
+
             document.getElementById('user-' + f.name).setAttribute('value', formatted);
-            document.getElementById('user-' + f.name).setAttribute('type', /number|integer/.test(f.type) ? 'text' : f.type);
+            document.getElementById('user-' + f.name).setAttribute('type', getType(f.type));
         });
     })
 </script>
@@ -155,7 +193,7 @@
             <label for={field.name}>{field.label}</label>
             <input
                 id={'user-' + field.name}
-                type={field.type === 'positive_number' ? 'number' : field.type}
+                type={getType(field.type)}
                 min={field.type === 'positive_number' ? 0 : null}
                 name={field.name}
                 on:focus={() => handleClearErrorMessage(field)}

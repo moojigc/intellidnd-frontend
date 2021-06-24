@@ -10,11 +10,12 @@
 	import VerifyEmail from './routes/User/VerifyEmail.svelte';
 	import InternalServerError from './routes/User/InternalServerError.svelte';
 	import browser from './stores/browser';
+	import user from './stores/user';
 
-	document.documentElement.className = $browser.mode;
+	document.documentElement.className = $user.mode;
 
 	window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-		document.documentElement.className = $browser.mode;
+		document.documentElement.className = $user.mode;
 	});
 
 	const routes = {
@@ -48,7 +49,7 @@
 			name: 'Error',
 			comp: InternalServerError
 		},
-		'/signup/verify/email': {
+		'/verify/email': {
 			name: 'Verify',
 			comp: VerifyEmail
 		}

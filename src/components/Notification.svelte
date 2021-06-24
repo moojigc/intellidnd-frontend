@@ -1,10 +1,19 @@
 <script lang="ts">
+import { navigate } from 'svelte-routing';
+
 	import user from '../stores/user';
 
 	$: type = $user.notification?.split('|')[0];
 	$: message = $user.notification?.split('|')[1];
 
 	const onClick = () => {
+		const link = document.getElementById('notif-link');
+		if (link) {
+			link.onclick = function(e) {
+				e.preventDefault();
+				navigate(link.getAttribute('href'));
+			}
+		}
 		user.set({ notification: null });
 	};
 </script>
@@ -12,7 +21,7 @@
 <div id="notif-wrapper" hidden={!$user.notification}>
 	<div id="notification" on:click={onClick} class={type || 'error'}>
 		<div style="margin: auto 0;">
-			{message || ''}
+			{@html message || ''}
 		</div>
 		<button on:click={onClick}>
 			Dismiss

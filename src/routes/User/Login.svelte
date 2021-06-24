@@ -7,14 +7,10 @@
 
     const fields = [
         {
-            label: 'Email',
+            label: 'Username, email, or phone #',
             name: 'email',
             type: 'text' as const,
             required: true,
-            validate: (v) => ({
-                ok: /^\S+@\S+$/.test(v),
-                message: 'Please enter a valid email address.'
-            }),
             defaultValue: $user.email
         },
         {

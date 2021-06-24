@@ -8,9 +8,9 @@
 
 	function changeMode() {
 
-		document.documentElement.className = $browser.mode === 'dark' ? 'light' : 'dark';
+		document.documentElement.className = $user.mode === 'dark' ? 'light' : 'dark';
 		// @ts-ignore
-		browser.set({ mode: document.documentElement.className });
+		user.set({ mode: document.documentElement.className });
 	}
 </script>
 
@@ -45,9 +45,9 @@
 		<Icon
 			{size}
 			expanded={$menu}
-			icon={$browser.mode === 'dark' ? 'wb_sunny' : 'wb_incandescent'}
+			icon={$user.mode === 'dark' ? 'wb_sunny' : 'wb_incandescent'}
 			handleClick={changeMode}
-			>{$browser.mode === 'dark' ? 'Light Mode' : 'Dark Mode'}</Icon
+			>{$user.mode === 'dark' ? 'Light Mode' : 'Dark Mode'}</Icon
 		>
 	</ul>
 </aside>
