@@ -8,6 +8,7 @@
 	export let color: string = '';
 	export let handleClick: (event: any) => void = null;
 	export let to = '';
+	export let margin: string = null;
 
 	const fontSize = {
 		tiny: '1rem',
@@ -23,7 +24,7 @@
 	};
 </script>
 
-<li>
+<li style={margin ? `margin: ${margin}` : ''}>
 	<Clicker style='flex-direction: {expanded ? 'row' : 'column'};' onClick={handleClick || to}>
 		<div style="height: {dimensions[size]}; width: {dimensions[size]} ">
 			<i

@@ -5,10 +5,16 @@
     import Flex from '../../components/Flex.svelte';
     import { user } from '../../stores/user';
 
+    const REDIRECT = /localhost/.test(window.origin)
+        ? 'http://localhost:5000'
+        : 'https://new.intellidnd.com';
+    const DISCORD_LOGIN =
+        `https://discord.com/api/oauth2/authorize?client_id=825446130484510780&redirect_uri=${encodeURIComponent(REDIRECT)}%2Foauth%2Fdiscord&response_type=code&scope=identify%20email`;
+    const DISCORD_W_GUILDS = DISCORD_LOGIN + '%20guilds';
     const fields = [
         {
             label: 'Username, email, or phone #',
-            name: 'email',
+            name: 'identifier',
             type: 'text' as const,
             required: true,
             defaultValue: $user.email
@@ -26,7 +32,7 @@
 
     async function handleSubmit(values) {
 
-        user.login(values.email, values.password)
+        user.login(values.identifier, values.password)
             .then(() => {
 
                 user.set({ fetching: false });
@@ -34,13 +40,12 @@
             })
             .catch(e => {
 
-                if (e.response?.status === 401) {
-
-                    fields.forEach((f, i) => {
-
-                        f.errorMessage = `That wasn't right! Try again?`;
-                        fields[i] = f;
-                    });
+                switch (e.response.status) {
+                    case 401:
+                        user.notify('Please double-check login credentials!', 'error');
+                        break;
+                    default:
+                        user.notify('Login failed.', 'error');
                 }
             });
     }
@@ -52,17 +57,35 @@
         fields={fields}
         {handleSubmit}
     >
-        <Flex margin='1rem' direction='column'>
+        <Flex margin='1rem' column>
             <Button type='submit'>Continue</Button>
         </Flex>
     </Form>
-    <small>
-        Don't have an account yet? <Link to='/signup'>Sign up here!</Link>
-    </small>
+    <Flex column alignX='flex-start'>
+        <small>
+            Don't have an account yet? <Link to='/signup'>Sign up here!</Link>
+        </small>
+        <small>
+            Or sign in with Discord instead:
+            <div>
+                <a href={DISCORD_W_GUILDS} referrer-policy='no-referrer'>
+                    Grant permissions to see what servers you're in
+                </a>
+            </div>
+            <div>
+                <a href={DISCORD_LOGIN} referrer-policy='no-referrer'>
+                    Grant email and id only
+                </a>
+            </div>
+        </small>
+    </Flex>
 </main>
 
 <style>
     main {
         max-width: 550px;
+    }
+    small {
+        margin-bottom: 1em;
     }
 </style>

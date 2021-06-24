@@ -107,7 +107,14 @@
             })
             .catch(e => {
                 if (e.response?.status === 403) {
-                    fields[0].errorMessage = 'That email\'s taken!';
+                    const taken = e.response.data.message.split(',');
+                    console.log(taken);
+                    fields.forEach((f, i) => {
+                        if (taken.includes(f.name)) {
+                            f.errorMessage = 'That one\'s taken!'
+                            fields[i] = f;
+                        }
+                    });
                 }
             });
     }
@@ -120,7 +127,7 @@
         fields={fields}
         {handleSubmit}
     >
-        <Flex margin='1rem' direction='column'>
+        <Flex margin='1rem' column>
             <Button type='submit'>Continue</Button>
         </Flex>
     </Form>

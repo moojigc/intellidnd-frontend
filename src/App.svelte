@@ -11,6 +11,7 @@
 	import InternalServerError from './routes/User/InternalServerError.svelte';
 	import browser from './stores/browser';
 	import user from './stores/user';
+import DiscordOAuth from './routes/User/DiscordOAuth.svelte';
 
 	document.documentElement.className = $user.mode;
 
@@ -19,6 +20,11 @@
 	});
 
 	const routes = {
+		'/': {
+			name: 'Welcome',
+			displayTitle: 'Welcome!',
+			comp: Dashboard
+		},
 		'/login': {
 			displayTitle: 'Login!',
 			name: 'Login',
@@ -28,14 +34,6 @@
 			displayTitle: 'Sign up!',
 			name: 'Signup',
 			comp: Signup
-		},
-		'/': {
-			name: 'Welcome',
-			comp: Dashboard
-		},
-		'/dashboard': {
-			name: 'Home',
-			comp: Dashboard
 		},
 		'/logout': {
 			name: 'Logout',
@@ -52,6 +50,10 @@
 		'/verify/email': {
 			name: 'Verify',
 			comp: VerifyEmail
+		},
+		'/oauth/discord': {
+			name: 'Discord Login',
+			comp: DiscordOAuth
 		}
 	};
 

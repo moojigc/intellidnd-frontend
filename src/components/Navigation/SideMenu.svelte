@@ -18,13 +18,6 @@
 	<ul>
 		{#if $user.id}
 			<Icon expanded={$menu} icon="account_circle" {size}>Account</Icon>
-			<Icon
-				expanded={$menu}
-				color="var(--color-red)"
-				icon="exit_to_app"
-				to="/logout"
-				{size}>Log out</Icon
-			>
 		{:else if location.pathname !== '/login'}
 			<Icon
 				expanded={$menu}
@@ -49,6 +42,16 @@
 			handleClick={changeMode}
 			>{$user.mode === 'dark' ? 'Light Mode' : 'Dark Mode'}</Icon
 		>
+		{#if $user.id}
+		<Icon
+			expanded={$menu}
+			color="var(--color-red)"
+			icon="exit_to_app"
+			to="/logout"
+			margin='auto 0 0 0'
+			{size}>Log out</Icon
+		>
+		{/if}
 	</ul>
 </aside>
 
@@ -71,6 +74,9 @@
 	}
 	.shrunk {
 		width: 4rem;
+	}
+	ul {
+		height: calc(100vh - 5rem);
 	}
 
 	@media screen and (max-width: 800px) {

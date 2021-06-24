@@ -19,7 +19,7 @@
 			label: coin[0].toUpperCase() + coin.substring(1),
 			defaultValue: char.inventory.wallet[coin],
 			type: 'positive_number',
-			validate: (v: number) => {
+			validate: (v) => {
 				let ok = true;
 				let message: string;
 

@@ -1,35 +1,51 @@
+import type { Character, CharacterStatic, Coins } from '../types';
 import type { AxiosError, AxiosRequestConfig, Method } from 'axios';
 import { navigate } from 'svelte-routing';
 import { writable, Writable } from 'svelte/store';
-import type { Character, CharacterStatic, Coins } from '../types';
 import getMap from '../utils/getMap';
 import request from '../utils/request';
 type Mode = 'dark' | 'light';
+type Email = {
+    address: string;
+    verifiedAt?: number;
+};
+type Phone = {
+    number: string;
+    verifiedAt?: number;
+}
 interface UserAttributes {
     id: string;
-    email: string;
+    email?: string;
+    phone?: string;
     name: string;
     token: string;
     expiresAt: number;
+    accountVerifiedAt?: number;
     characters: Record<string, Character>;
     fetching?: boolean;
     notification?: string;
     inSync: boolean;
     mode: Mode;
+    emails?: Email[];
+    phones?: Phone[];
 }
 
 class User implements UserAttributes {
 
     public id: string;
     public name: string;
-    public email: string;
+    public email?: string;
+    public phone?: string;
     public token: string;
     public expiresAt: number;
+    public accountVerifiedAt?: number;
     public characters: Record<string, Character>;
     public fetching = false;
     public notification?: string;
     public inSync = true;
     public mode: Mode = 'dark';
+    public emails: Email[];
+    public phones: Phone[];
 
     private _blank = {
         id: null,
@@ -103,7 +119,7 @@ class User implements UserAttributes {
         
         for (const k in user) {
 
-            if (['token', 'fetching'].includes(k)) { continue; }
+            if (['token', 'fetching', 'notification'].includes(k)) { continue; }
 
             ls[k] = user[k];
         }
@@ -394,11 +410,14 @@ class User implements UserAttributes {
         firstName?: string;
         lastName?: string;
         username?: string;
+        phone?: string;
     }) {
 
-        await this._publicRequest('/user/signup', 'POST', {
+        const res = await this._publicRequest('/user/signup', 'POST', {
             data: details
         });
+
+        this.set(res);
     }
 
     public async login(identifier: string, password: string) {
@@ -458,30 +477,30 @@ class User implements UserAttributes {
         chars && this.set({ characters: getMap(this._initCharacters(chars), 'id') });
     }
 
-    public async validateEmail(token: string) {
-
-        this.set({ fetching: true });
-
-        try {
-            const res = await request('/user/verify/email', 'PATCH', token);
-            this.set(res);
-        }
-        catch (e) {
-            if (e.response) {
-                switch (e.response.status) {
-                    case 404:
-                        window.location.assign('/signup');
-                        break;
-                    case 403:
-                        window.location.assign('/login');
-                        break;
-                }
+    public verifyPhone(phone: string, code: string) {
+        return this._request(`/user/phone/${phone}/verify/`, 'PATCH', {
+            data: {
+                code,
             }
-        }
-        finally {
-            this.set({ fetching: false });
-        }
+        });
+    }
 
+    public verifyEmail(email: string, code: string) {
+        return this._request(`/user/email/${email}/verify/`, 'PATCH', {
+            data: {
+                code,
+            }
+        });
+    }
+
+    public async discordLogin(code: string) {
+        const res = await this._publicRequest('/user/oauth/discord', 'POST', {
+            data: {
+                code
+            }
+        });
+        this.set(res);
+        return this;
     }
 }
 
