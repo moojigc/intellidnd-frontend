@@ -36,15 +36,15 @@ function writeVersion(args) {
 
 	VERSION = Date.now();
 	function _write() {
-		const _files = fs.readdirSync('public/build');
+		const _files = fs.readdirSync(__dirname + '/public/build');
 
-		let indexHtml = fs.readFileSync('src/index.html', { encoding: 'utf-8' });
+		let indexHtml = fs.readFileSync(__dirname + '/src/index.html', { encoding: 'utf-8' });
 		indexHtml = indexHtml.replace(/{version}/g, VERSION);
-		fs.writeFileSync('public/index.html', indexHtml, { encoding: 'utf-8' });
+		fs.writeFileSync(__dirname + '/public/index.html', indexHtml, { encoding: 'utf-8' });
 
 		for (const f of _files) {
 			if (/bundle/.test(f) && !f.match(VERSION)) {
-				fs.unlink('public/build/' + f, () => void 0);
+				fs.unlink(__dirname + '/public/build/' + f, () => void 0);
 			}
 		}
 	};
