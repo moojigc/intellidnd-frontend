@@ -65,7 +65,7 @@ export default {
 		file: 'public/build/bundle_' + VERSION + '.js'
 	},
 	plugins: [
-		!production && writeVersion(),
+		writeVersion(),
 		svelte({
 			preprocess: sveltePreprocess({
 				sourceMap: !production
