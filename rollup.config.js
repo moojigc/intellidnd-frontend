@@ -36,7 +36,14 @@ function writeVersion(args) {
 
 	VERSION = Date.now();
 	function _write() {
-		const _files = fs.readdirSync(__dirname + '/public/build');
+		let _files;
+		try {
+			_files = fs.readdirSync(__dirname + '/public/build');
+		}
+		catch (e) {
+			fs.mkdirSync(__dirname + '/public/build');
+			_files = [];
+		}
 
 		let indexHtml = fs.readFileSync(__dirname + '/src/index.html', { encoding: 'utf-8' });
 		indexHtml = indexHtml.replace(/{version}/g, VERSION);
