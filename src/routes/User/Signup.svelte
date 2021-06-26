@@ -4,6 +4,7 @@
     import Flex from '../../components/Flex.svelte';
     import Form from '../../components/Form.svelte';
     import { user } from '../../stores/user';
+import format from '../../utils/format';
 
     const fields: Form['$$prop_def']['fields'] = [
         {
@@ -47,7 +48,7 @@
             name: 'phone',
             type: 'phone',
             validate: (v) => ({
-                ok: /^(\+1)?\d{10}$/.test(v),
+                ok: /^\d{10,11}$/.test(v.split('').filter(p => /\d/.test(p)).join('')),
                 message: 'Please enter a valid US phone number (I\'m too broke for international support).'
             }),
         },
@@ -100,15 +101,21 @@
         
         user.signup(values)
             .then(() => {
-                navigate('/login');
+                const params = new URLSearchParams();
+                if (values.email) {
+                    params.append('email', values.email);
+                }
+                if (values.phone) {
+                    params.append('phone', values.phone);
+                }
+                navigate('/verify?' + params.toString());
                 user.notify(
-                    'Thank you for signing up! An email will be sent to ' + values.email + ' shortly.', 'success', false
+                    'Thank you for signing up! A verification code will be sent to you shortly.', 'success', false
                 );
             })
             .catch(e => {
                 if (e.response?.status === 403) {
                     const taken = e.response.data.message.split(',');
-                    console.log(taken);
                     fields.forEach((f, i) => {
                         if (taken.includes(f.name)) {
                             f.errorMessage = 'That one\'s taken!'

@@ -56,6 +56,17 @@ export default async function request(
 ) {
     try {
 
+        if (options.data) {
+
+            for (const k in options.data) {
+
+                if (options.data[k] === '') {
+                    console.log('WHAT')
+                    delete options.data[k];
+                }
+            }
+        }
+
         const res = await axios({
             url: target,
             method: method,

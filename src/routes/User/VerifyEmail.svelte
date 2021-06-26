@@ -6,11 +6,12 @@
 
 	onMount(() => {
 
-		const token = new URLSearchParams(window.location.search).get('token');
+		const params = new URLSearchParams(window.location.search);
+		const [token, email] = [params.get('token'), params.get('email')];
 
-		user.validateEmail(token).then(() => {
+		user.verifyEmail(email, token).then(() => {
 
-			navigate('/dashboard');
+			navigate('/');
 		});
 	});
 </script>

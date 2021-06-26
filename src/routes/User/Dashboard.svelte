@@ -17,7 +17,7 @@
 		['copper', 'silver', 'gold', 'electrum', 'platinum'].map((coin) => ({
 			name: coin,
 			label: coin[0].toUpperCase() + coin.substring(1),
-			defaultValue: char.inventory.wallet[coin],
+			defaultValue: char.inventory.wallet[coin] || 0,
 			type: 'positive_number',
 			validate: (v) => {
 				let ok = true;

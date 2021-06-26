@@ -145,6 +145,7 @@ class User implements UserAttributes {
             if (e.response?.status === 401) {
 
                 this.notify('Please login to continue.', 'error', true);
+                this._clear();
                 navigate('/login');
             }
 
@@ -477,20 +478,22 @@ class User implements UserAttributes {
         chars && this.set({ characters: getMap(this._initCharacters(chars), 'id') });
     }
 
-    public verifyPhone(phone: string, code: string) {
-        return this._request(`/user/phone/${phone}/verify/`, 'PATCH', {
+    public async verifyPhone(phone: string, code: string) {
+        await this._request(`/user/phone/${phone}/verify`, 'PATCH', {
             data: {
                 code,
             }
         });
+        await this._getRefreshToken();
     }
 
-    public verifyEmail(email: string, code: string) {
-        return this._request(`/user/email/${email}/verify/`, 'PATCH', {
+    public async verifyEmail(email: string, code: string) {
+        await this._request(`/user/email/${encodeURIComponent(email)}/verify`, 'PATCH', {
             data: {
                 code,
             }
         });
+        await this._getRefreshToken();
     }
 
     public async discordLogin(code: string) {
@@ -501,6 +504,30 @@ class User implements UserAttributes {
         });
         this.set(res);
         return this;
+    }
+
+    public async recover(identifier: string) {
+        return await this._publicRequest('/user/recover', 'POST', {
+            data: {
+                identifier
+            }
+        });
+    }
+
+    public async resendPhoneCode(phone: string) {
+        return await this._request(`/user/phone/${phone}/send`, 'POST');
+    }
+
+    public async resendEmailCode(email: string) {
+        return await this._request(`/user/email/${encodeURIComponent(email)}`, 'POST');
+    }
+
+    public async addPhone(phone: string) {
+        return await this._request(`/user/phone`, 'POST', {
+            data: {
+                phone
+            }
+        });
     }
 }
 

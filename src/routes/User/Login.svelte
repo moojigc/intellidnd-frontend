@@ -44,6 +44,8 @@
                     case 401:
                         user.notify('Please double-check login credentials!', 'error');
                         break;
+                    case 429:
+                        break;
                     default:
                         user.notify('Login failed.', 'error');
                 }
@@ -62,6 +64,9 @@
         </Flex>
     </Form>
     <Flex column alignX='flex-start'>
+        <small>
+            <Link to='/recover?type=password'>Forgot password?</Link>
+        </small>
         <small>
             Don't have an account yet? <Link to='/signup'>Sign up here!</Link>
         </small>

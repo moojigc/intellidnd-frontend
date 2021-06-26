@@ -1,7 +1,6 @@
 const PRECACHE = 'precache-v1';
 const RUNTIME = 'runtime';
 const PRECACHE_URLS = [
-	'index.html',
 	'favicon.ico',
 	'favicon-32x32.png',
 	'favicon-16x16.png',
@@ -9,8 +8,6 @@ const PRECACHE_URLS = [
 	'assets/css/reset.css',
 	'assets/css/materialize.min.css',
 	'assets/images/primary-logo.png',
-	'build/bundle.js',
-	'build/bundle.css'
 ];
 
 self.addEventListener('install', event => {

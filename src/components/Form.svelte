@@ -1,13 +1,14 @@
 <script lang="ts">
-    import { onMount } from "svelte";
-import App from "../App.svelte";
+    import { onMount } from 'svelte';
+    import format from '../utils/format';
     type InputEvent = Event & {
         currentTarget: EventTarget & HTMLInputElement;
     };
 	interface Field {
 		name: string;
 		label: string;
-		type?: 'text' | 'number' | 'positive_number' | 'date' | 'password' | 'email' | 'phone';
+		type?: 'text' | 'number' | 'positive_number' | 'date' | 'password' | 'email' | 'phone' | 'code';
+        max?: number;
 		validate?: (e: string, values: any) => { ok: boolean; message?: string; };
         errorMessage?: string;
         defaultValue?: string;
@@ -85,6 +86,17 @@ import App from "../App.svelte";
 
         let value: any = target.value;
 
+        if (field.max && target.value.length > field.max) {
+            value = target.value = target.value.substring(0, field.max);
+        }
+
+        // @ts-ignore
+        if (e.which === 8) {
+
+            values[target.name] = target.value;
+            return;
+        }
+
         if (field.type) {
 
             switch (field.type) {
@@ -95,27 +107,8 @@ import App from "../App.svelte";
                     target.value = value.toLocaleString();
                     break;
                 case 'phone':
-                    value = value.split('').filter(v => /\d/.test(v)).join('');
-                    console.log(value);
-                    let formatted = '';
-                    for (let i=0; i < value.length; i++) {
-
-                        switch (i) {
-                            case 0:
-                                formatted += '(' + value[0];
-                                break;
-                            case 2:
-                                formatted +=  value[2] + ') ';
-                                break;
-                            case 6:
-                                formatted += '-' + value[6];
-                                break;
-                            default:
-                                formatted += value[i];
-                                break;
-                        }
-                    }
-                    target.value = formatted;
+                    target.value = format.phone(value);
+                    break;
                 default: 
                     break;
             }
@@ -130,13 +123,14 @@ import App from "../App.svelte";
 	};
 
     const handleValidate = (field: Field) => {
-
+        
         if (field.validate && values[field.name]) {
-
+            
             let ok = false;
             let errorMsg = null;
-
+            
             const ret = field.validate(values[field.name], values);
+            console.log(values[field.name])
 
             ok = ret.ok;
             errorMsg = ret.message;
@@ -153,6 +147,12 @@ import App from "../App.svelte";
 
             fields[fields.indexOf(field)] = field;
         }
+        
+        if (field.required && !values[field.name]) {
+
+            submittable = false;
+            field.errorMessage = 'required';
+        }
     }
 
     const handleClearErrorMessage = (field: Field) => {
@@ -167,6 +167,8 @@ import App from "../App.svelte";
             case 'positive_number':
             case 'phone':
                 return 'text';
+            case 'code':
+                return 'number';
             default:
                 return t;
         }
@@ -178,10 +180,14 @@ import App from "../App.svelte";
             
             values[f.name] = f.defaultValue ?? '';
             const formatted = /number|integer/.test(f.type)
-                ? Number(values[f.name] ?? 0).toLocaleString()
+                ? (Number(values[f.name])
+                    ? Number(values[f.name]).toLocaleString()
+                    : '')
                 : values[f.name]; 
 
-            document.getElementById('user-' + f.name).setAttribute('value', formatted);
+            if (formatted) {
+                document.getElementById('user-' + f.name).setAttribute('value', formatted);
+            }
             document.getElementById('user-' + f.name).setAttribute('type', getType(f.type));
         });
     })
@@ -195,6 +201,7 @@ import App from "../App.svelte";
                 id={'user-' + field.name}
                 type={getType(field.type)}
                 min={field.type === 'positive_number' ? 0 : null}
+                maxlength={field.max}
                 name={field.name}
                 on:focus={() => handleClearErrorMessage(field)}
                 on:keydown={() => handleClearErrorMessage(field)}

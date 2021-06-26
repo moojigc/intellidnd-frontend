@@ -2,13 +2,20 @@
 	import Nav from './Navigation/Nav.svelte';
 	import ProgressBar from './ProgressBar.svelte';
 	import SideMenu from './Navigation/SideMenu.svelte';
+	import user from '../stores/user';
+	import { navigate } from 'svelte-routing';
 
 	export let displayTitle: string;
 	export let title: string;
 	export let comp: any;
+	export let isPublic = false;
 
 	if (title) {
 		document.title = title + ' | IntelliDnD';
+	}
+	if (!isPublic && !$user.id) {
+
+		navigate('/login', { replace: true });
 	}
 </script>
 

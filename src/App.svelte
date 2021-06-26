@@ -11,7 +11,9 @@
 	import InternalServerError from './routes/User/InternalServerError.svelte';
 	import browser from './stores/browser';
 	import user from './stores/user';
-import DiscordOAuth from './routes/User/DiscordOAuth.svelte';
+	import DiscordOAuth from './routes/User/DiscordOAuth.svelte';
+	import Recover from './routes/User/Recover.svelte';
+	import VerifyCode from './routes/User/VerifyCode.svelte';
 
 	document.documentElement.className = $user.mode;
 
@@ -28,32 +30,51 @@ import DiscordOAuth from './routes/User/DiscordOAuth.svelte';
 		'/login': {
 			displayTitle: 'Login!',
 			name: 'Login',
-			comp: Login
+			comp: Login,
+			isPublic: true
 		},
 		'/signup': {
 			displayTitle: 'Sign up!',
 			name: 'Signup',
-			comp: Signup
+			comp: Signup,
+			isPublic: true
 		},
 		'/logout': {
 			name: 'Logout',
-			comp: Logout
+			comp: Logout,
+			isPublic: true
 		},
 		'/error': {
 			name: 'Error',
-			comp: Error
+			comp: Error,
+			isPublic: true
 		},
 		'/error/server': {
 			name: 'Error',
-			comp: InternalServerError
+			comp: InternalServerError,
+			isPublic: true
 		},
 		'/verify/email': {
 			name: 'Verify',
-			comp: VerifyEmail
+			comp: VerifyEmail,
+			isPublic: false
 		},
 		'/oauth/discord': {
 			name: 'Discord Login',
-			comp: DiscordOAuth
+			comp: DiscordOAuth,
+			isPublic: true
+		},
+		'/recover': {
+			name: 'Recover',
+			displayTitle: 'Account Recovery',
+			comp: Recover,
+			isPublic: true
+		},
+		'/verify': {
+			name: 'Verify',
+			displayTitle: 'Enter code',
+			comp: VerifyCode,
+			isPublic: false
 		}
 	};
 
@@ -78,6 +99,7 @@ import DiscordOAuth from './routes/User/DiscordOAuth.svelte';
 				displayTitle={props.displayTitle}
 				comp={props.comp}
 				title={props.name}
+				isPublic={props.isPublic}
 			/>
 		</Route>
 	{/each}
