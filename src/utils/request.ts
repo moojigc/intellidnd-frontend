@@ -2,7 +2,7 @@ import Axios, { Method, AxiosRequestConfig } from 'axios';
 import { navigate } from 'svelte-routing'
 
 const BASE_URL = /intellidnd.com/i.test(location.host)
-    ? 'https://api.intellidnd.com/v1'
+    ? 'https://intellidndapi.chimid.rocks/v1'
     : 'http://localhost:4000/v1'
 const axios = Axios.create({
     // @ts-ignore
