@@ -1,9 +1,9 @@
-import Axios, { Method, AxiosRequestConfig } from 'axios';
-import { navigate } from 'svelte-routing'
+import Axios, { Method, AxiosRequestConfig } from "axios";
+import { navigate } from "svelte-routing";
 
 const BASE_URL = /intellidnd.com/i.test(location.host)
-    ? 'https://intellidndapi.chimid.rocks/v1'
-    : 'http://localhost:4000/v1'
+    ? "https://intellidndapi.chimid.rocks/v1"
+    : "http://localhost:4000/v1";
 const axios = Axios.create({
     // @ts-ignore
     baseURL: window.API_URL || BASE_URL,
@@ -11,57 +11,43 @@ const axios = Axios.create({
 
 const sleep = () => new Promise((resolve, _) => setTimeout(resolve, 30000));
 const _ping = async () => {
-
     let ok = false;
     let reattempts = 0;
 
     while (!ok && reattempts <= 5) {
-
-        const res = await fetch('/ping');
+        const res = await fetch("/ping");
         if (res.status >= 200 && res.status < 300) {
-
             ok = true;
-        }
-        else {
-
-            reattempts ++;
-            console.log(reattempts)
+        } else {
+            reattempts++;
+            console.log(reattempts);
             await sleep();
         }
     }
-}
+};
 
 axios.interceptors.response.use(null, (err) => {
-
     if (/Network Error/.test(err.message)) {
-
-        navigate('/error');
+        navigate("/error");
         _ping();
-    }
-    else if (err.response?.status === 500) {
-
-        navigate('/error/server');
-    }
-    else {
-
+    } else if (err.response?.status === 500) {
+        navigate("/error/server");
+    } else {
         return Promise.reject(err);
     }
 });
 
 export default async function request(
-	target: string,
-	method: Method = 'GET',
+    target: string,
+    method: Method = "GET",
     token?: string,
-	options: AxiosRequestConfig = {}
+    options: AxiosRequestConfig = {}
 ) {
     try {
-
         if (options.data) {
-
             for (const k in options.data) {
-
-                if (options.data[k] === '') {
-                    console.log('WHAT')
+                if (options.data[k] === "") {
+                    console.log("WHAT");
                     delete options.data[k];
                 }
             }
@@ -72,22 +58,18 @@ export default async function request(
             method: method,
             headers: token
                 ? {
-                    Authorization: `Bearer ${token}`
-                    }
+                      Authorization: `Bearer ${token}`,
+                  }
                 : {},
-            withCredentials: true,
-            ...options
+            ...options,
         });
 
         return res?.data;
-    }
-    catch (e) {
-
+    } catch (e) {
         if (e.response) {
-
             switch (e.response.status) {
                 case 500:
-                    navigate('/error');
+                    navigate("/error");
                 default:
                     throw e;
             }
